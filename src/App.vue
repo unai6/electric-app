@@ -1,9 +1,13 @@
 <script setup>
-import Dashboard from '@/components/Dashboard.vue'
+import { RouterView } from 'vue-router'
+
 </script>
 
 <template>
-  <dashboard />
+  <div id="app">
+    <app-header />
+    <router-view class="app__content" />
+  </div>
 </template>
 
 <style>

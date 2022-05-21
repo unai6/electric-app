@@ -16,6 +16,7 @@ export default defineConfig({
           @import "@/assets/scss/partials/_tokens.scss";
           @import "@/assets/scss/partials/_mixins.scss";
           @import "@/assets/scss/partials/_functions.scss";
+          @import "@/assets/scss/partials/_grid.scss";
         `,
       },
     },
