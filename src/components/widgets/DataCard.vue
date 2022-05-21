@@ -23,3 +23,11 @@ const props = defineProps({
     <slot />
   </div>
 </template>
+
+<style lang="scss">
+.data-card {
+  display: flex;
+  flex-direction: column;
+  background: $very-light-gray-color;
+}
+</style>

@@ -4,5 +4,7 @@ import RealTimeDemand from '@/components/RealTimeDemand.vue'
 
 <template>
   <h1>Dashboard</h1>
-  <real-time-demand />
+  <div class="grid grid--2cols">
+    <real-time-demand />
+  </div>
 </template>
