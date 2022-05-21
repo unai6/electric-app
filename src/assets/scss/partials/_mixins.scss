@@ -1,0 +1,62 @@
+// Responsiveness and media breakpoints
+
+@mixin breakpoint($class) {
+  @if $class == xs {
+    @media (max-width: $xs-breakpoint) { @content; }
+  }
+
+  @else if $class == sm {
+    @media (min-width: $sm-breakpoint - 1px) { @content; }
+  }
+
+  @else if $class == md {
+    @media (min-width: $md-breakpoint - 1px) { @content; }
+  }
+
+  @else if $class == lg {
+    @media (min-width: $lg-breakpoint - 1px) { @content; }
+  }
+
+  @else {
+    @warn "breakpoint mixin supports: xs, sm, md, lg";
+  }
+}
+
+@mixin up-to-breakpoint($class) {
+
+  @if $class == sm {
+    @media (max-width: $sm-breakpoint) { @content; }
+  }
+
+  @else if $class == md {
+    @media (max-width: $md-breakpoint) { @content; }
+  }
+
+  @else if $class == lg {
+    @media (max-width: $lg-breakpoint) { @content; }
+  }
+
+  @else if $class == xl {
+    @media (max-width: $lg-breakpoint) { @content; }
+  }
+
+  @else {
+    @warn "up-to-breakpoint mixin supports: sm, md, lg";
+  }
+}
+
+// Visual styles
+
+@mixin solid-border {
+  border: 4px solid var(--neutral-shade-3);
+  border-radius: $big-radius;
+}
+
+@mixin bottom-shadow {
+  box-shadow: rgba(33, 35, 38, 0.08) 0px 14px 10px -10px;
+}
+
+@mixin top-shadow {
+  box-shadow: rgba(33, 35, 38, 0.3) 0px -4px 8px -3px;
+}
+

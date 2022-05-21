@@ -1,0 +1,151 @@
+.adminform {
+  &__select {
+    background-color: $white-color;
+    color: var(--neutral-shade-9);
+    font-size: ms(0);
+    padding: $spacer-quarter;
+    color: $body-color;
+    margin-bottom: $spacer-half;
+    font-weight: $font-weight-light;
+    font-family: $font-family-base;
+    font-size: ms(0);
+    border: none;
+    border: 1px solid shade($primary-color, lighter-2);
+    border-radius: $small-radius;
+    appearance: none;
+    background-image: url('/icons/down-chevron.svg');
+    background-repeat: no-repeat, repeat;
+    background-position: right 2px;
+    min-width: 6rem;
+    max-width: 18rem;
+
+    @include breakpoint(sm) {
+      min-width: 10rem;
+      max-width: 36rem;
+    }
+
+    &--fullwidth {
+      width: 100%;
+    }
+
+    &--mediumwidth {
+      min-width: 12rem;
+    }
+
+    &:focus {
+      border: 1px solid $primary-color;
+    }
+
+    &:disabled {
+      opacity: 1;
+      color: $dark-gray-color;
+      background-color: $white-color;
+      border: solid 1px $gray-color;
+      background-position: right -22px;
+    }
+  }
+
+  &__field {
+    $input-padding: 0.15rem;
+
+    position: relative;
+    margin-top: $spacer-quarter;
+    margin-bottom: $spacer-half;
+
+    &-error {
+      font-size: ms(-1);
+      color: $danger-color;
+      margin-top: $spacer-half;
+      margin-left: $spacer-half;
+      margin-bottom: 0;
+      font-weight: $font-weight-regular;
+      line-height: 1;
+    }
+
+    label {
+      display: block;
+      font-size: ms(-1);
+      font-weight: $font-weight-light;
+      color: $dark-gray-color;
+      margin-bottom: $spacer-quarter;
+    }
+
+    input[type="date"],
+    input[type="number"],
+    input[type="text"],
+    input[type="password"],
+    textarea {
+      border-radius: $small-radius;
+      border: solid 1px shade($primary-color, lighter-2);
+      width: 100%;
+      box-sizing: border-box;
+      font-size: ms(0);
+      padding: $spacer-quarter;
+      color: $body-color;
+      background-color: $white-color;
+      font-family: $font-family-base;
+      font-weight: $font-weight-light;
+
+      &:focus {
+        border: solid 1px $primary-color;
+      }
+
+      &:disabled {
+        opacity: 1;
+        color: $dark-gray-color;
+        background-color: $white-color;
+        border: solid 1px $gray-color;
+      }
+
+    }
+
+    input[type="number"] {
+      min-width: 6rem;
+    }
+
+    &--1col {
+      grid-column: span 1;
+    }
+
+    &--2col {
+      grid-column: span 2;
+    }
+
+    &--3col {
+      grid-column: span 3;
+    }
+
+    &--4col {
+      grid-column: span 4;
+    }
+
+    &--stretch {
+      grid-column-end: -1;
+    }
+
+    &--fullwidth {
+      grid-column-start: 1;
+      grid-column-end: -1;
+    }
+
+    &--newrow {
+      grid-column-start: 1;
+    }
+
+    &--side {
+      display: flex;
+      margin-bottom: $spacer;
+      align-items: center;
+      max-width: 400px;
+
+      label {
+        font-size: ms(0);
+      }
+
+      & > * {
+        max-width: 9rem;
+        margin-left: $spacer-half;
+      }
+    }
+  }
+}

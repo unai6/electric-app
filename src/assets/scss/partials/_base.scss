@@ -1,0 +1,187 @@
+// Theme fonts
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap');
+
+// Make type normal across browsers
+html, body {
+  font-size: 15px;
+  font-family: "Lato", "Sans-Serif";
+  font-weight: $font-weight-light;
+  line-height: 1.5;
+}
+
+// TODO: verify if we want this for accessibility reasons.
+// Remove the blue glow for elements in focus
+:focus {
+  outline-color: transparent;
+  outline-style: none;
+}
+
+// Headers
+h1 {
+  color: $heading-color;
+  font-size: ms(3);
+  font-weight: $font-weight-bold;
+  letter-spacing: 0.05rem;
+  line-height: 1.2;
+
+  span {
+    font-weight: $font-weight-light;
+    font-size: ms(2);
+  }
+}
+
+h2 {
+  color: $heading-color;
+  font-size: ms(2);
+  font-weight: $font-weight-bold;
+  margin-bottom: $spacer-half;
+
+  span {
+    font-weight: $font-weight-light;
+    font-size: ms(1);
+  }
+}
+
+h3 {
+  color: $heading-color;
+  font-size: ms(1);
+  font-weight: $font-weight-bold;
+  vertical-align: text-bottom;
+}
+
+h4 {
+  color: $heading-color;
+  font-weight: $font-weight-bold;
+  font-size: ms(0);
+}
+
+h5, h6 {
+  color: $heading-color;
+  font-size: ms(-1);
+  text-transform: uppercase;
+}
+
+// Paragraphs
+p, .p {
+  font-size: ms(0);
+  margin-bottom: $base-line-height*0.5;
+  line-height: $base-line-height;
+  color: $paragraph-color;
+  font-weight: $font-weight-light;
+
+  &--hilite {
+    font-weight: $font-weight-regular;
+    color: $primary-color;
+  }
+
+  &--small {
+    font-size: ms(-1);
+  }
+
+  &--semicompact {
+    margin-bottom: $base-line-height*0.25;
+  }
+
+  &--compact {
+    margin: 0;
+    line-height: 1.2;
+  }
+
+  &--centered {
+    text-align: center;
+  }
+
+  a {
+    color: $primary-color;
+    font-weight: $font-weight-regular;
+    cursor: pointer;
+
+    &:visited {
+      color: $primary-color;
+    }
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+// Links
+a {
+  color: $primary-color;
+  font-weight: $font-weight-regular;
+  text-decoration: underline;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+// Lists
+ul, ol {
+  margin: $paragraph-margin 0 $spacer 20px;
+
+  li {
+    margin-top: 0;
+    line-height: $base-line-height;
+    color: $paragraph-color;
+  }
+
+  ul, ol {
+    margin-top: 0;
+  }
+}
+
+ul {
+  li {
+    list-style: disc;
+  }
+
+  ul {
+    li {
+      list-style: circle;
+    }
+  }
+}
+
+ol {
+  li {
+    list-style: decimal;
+  }
+}
+
+
+hr, .hr {
+  border: 0;
+  height: 0;
+  border-top: 1px solid $gray-color;
+  margin: $spacer 0;
+}
+
+sup {
+  top: -0.5em;
+}
+sub {
+  bottom: -0.25em;
+}
+
+// Misc Styles
+em, i {
+  font-style: italic;
+}
+
+strong, b {
+  font-weight: $font-weight-bold;
+}
+
+small, .small {
+  font-size: 0.75em;
+}
+
+td {
+  color: $paragraph-color;
+}
+
+// TODO: Consider adding these elements
+
+// input {}

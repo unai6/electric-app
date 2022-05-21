@@ -1,0 +1,203 @@
+.box {
+  background-color: $white-color;
+  border: 1px solid $primary-color;
+  border-radius: $big-radius;
+  padding: $spacer*2 $spacer $spacer $spacer;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 100px;
+  position: relative;
+  margin-bottom: $spacer;
+
+  @include bottom-shadow;
+
+  // Different box styles
+
+  &--square {
+    border-radius: $small-radius;
+  }
+
+  &--central {
+    width: initial;
+    max-width: $max-central-width;
+    margin: $spacer;
+
+    @include breakpoint(sm) {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
+  &--centered-content {
+    text-align: center;
+  }
+
+  &--borderless {
+    border: 0;
+  }
+
+  &--secondary {
+    border: 1px solid $secondary-color;
+
+    & .box__heading {
+      background-color: $secondary-color;
+    }
+
+    & .box__heading--round {
+      overflow: hidden;
+      border-top: 2px solid $secondary-color;
+      border-top-left-radius: $big-radius - 2px;
+      border-top-right-radius: $big-radius - 2px;
+    }
+  }
+
+  &--is-container {
+    display: flex;
+    padding: $spacer $spacer*1.5;
+    padding-top: $spacer*2;
+  }
+
+  &--is-container-compact {
+    display: flex;
+    padding: $spacer $spacer;
+  }
+
+  &--is-container-col {
+    display: flex;
+    flex-direction: column;
+    padding: $spacer $spacer*1.5;
+  }
+
+  &--noshadow {
+    box-shadow: 0;
+  }
+
+  // Box elements (inside) ----------------
+
+  &__heading {
+    background-color: $primary-color;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+
+    color: $white-color;
+    text-align: center;
+    font-weight: $font-weight-regular;
+    height: $spacer*2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: ms(-1);
+
+    @include breakpoint(sm) {
+      font-size: ms(0);
+    }
+
+    &--round {
+      border-top-left-radius: $big-radius - 2px;
+      border-top-right-radius: $big-radius - 2px;
+      border-top: 1px solid $primary-color;
+    }
+
+    &--cols {
+      justify-content: space-around;
+
+      h3 {
+        font-size: ms(-1);
+        color: $white-color;
+        text-align: center;
+        font-weight: $font-weight-regular;
+        flex: 1;
+
+        @include breakpoint(sm) {
+          font-size: ms(0);
+        }
+      }
+    }
+  }
+
+  &__half {
+    flex: 1;
+    padding: $spacer-half;
+    position: relative;
+
+    @include breakpoint(sm) {
+      padding: $spacer-half $spacer;
+    }
+  }
+
+  // Box text elements ------------------------
+
+  &__label {
+    font-size: ms(0);
+    color: $very-dark-gray-color;
+    font-weight: $font-weight-light;
+    display: block;
+  }
+
+  &__p {
+    color: $very-dark-gray-color;
+    font-weight: $font-weight-regular;
+    margin-bottom: -1*$spacer-quarter;
+    margin-bottom: $spacer-half;
+  }
+
+  &__hilite {
+    display: block;
+    background-color: shade($primary-color, lighter-2);
+    font-weight: $font-weight-regular;
+    margin: $spacer-half 0;
+    padding: $spacer*0.125 $spacer-half;
+    width: max-content;
+    min-width: 5rem;
+
+
+    &--hasicon {
+      padding-left: $spacer*2;
+      background-repeat: no-repeat;
+      background-size: 18px;
+      background-position: 5px center;
+    }
+
+    &--period {
+      background-image: url('/icons/box.svg');
+    }
+
+    &--price {
+      background-image: url('/icons/euro.svg');
+    }
+  }
+}
+
+// ---------------------------
+// Rounded, small box with blue contour for short info messages.
+
+.infobox {
+  border-radius: $medium-radius;
+  background-color: $white-color;
+  border: 1px solid $secondary-color;
+  max-width: $max-central-width;
+  margin: $spacer;
+  padding: $spacer-half $spacer;
+  box-sizing: border-box;
+  font-size: ms(-1);
+  position: relative;
+
+  @include breakpoint(sm) {
+    margin: $spacer auto;
+  }
+
+  &::before {
+    content: '';
+    background: url('/icons/info.svg');
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    width: 22px;
+    height: 22px;
+  }
+}
+
+
+

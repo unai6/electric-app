@@ -1,0 +1,134 @@
+@use "sass:map";
+
+// Colors
+// --------------------
+
+// Whites
+$white-color: #fff;
+$broken-white-color: #f3f1f0;
+// Shades of gray
+$very-light-gray-color: #E5E5E5;
+$light-gray-color: #BDBFC2;
+$gray-color: #A7A9AB;
+$medium-gray-color: #888D92;
+$dark-gray-color: #4E555B;
+$very-dark-gray-color: #212425;
+$black-color: #111111;
+// Main palette colors
+$primary-color: #EC8C6C;
+$secondary-color: #4e90a1;
+$tertiary-color: #AA9B8D;
+
+
+$body-color: #282828;
+$body-darker-color: $very-dark-gray-color;
+
+$light-shadow-color: rgba(0, 0, 0, 0.3);
+$transp-black-color: rgba(0, 0, 0, 0.6);
+
+$success-color: #30a75a;
+$info-color: #26a0c5;
+$warning-color: #d39015;
+$danger-color:  #ca4747;
+
+$dark-shadow-color: rgba(0, 0, 0, 0.7);
+$transp-white-color :rgba(255, 255, 255, 0.4);
+
+
+//  Create shades of each color and return a value based on that.
+@function shade($color, $shade) {
+  $color-shades: (
+      #{$color}-base: $color,
+      #{$color}-lighter-1: lighten($color, 5),
+      #{$color}-lighter-2: lighten($color, 12),
+      #{$color}-lighter-3: lighten($color, 25),
+      #{$color}-lighter-4: lighten($color, 38),
+      #{$color}-darker-1: darken($color, 5),
+      #{$color}-darker-2: darken($color, 12),
+      #{$color}-darker-3: darken($color, 25),
+      #{$color}-darker-4: darken($color, 38),
+  );
+
+  @return map.get($color-shades, #{$color}-#{$shade});
+}
+
+// Spacing
+
+$spacer: 1rem !default;
+
+$small-radius: 5px;
+$medium-radius: 8px;
+$big-radius: 16px;
+
+// Layout
+// --------------------
+$xs-breakpoint: 649px;
+$sm-breakpoint: 650px;
+$md-breakpoint: 850px;
+$lg-breakpoint: 1170px;
+$xl-breakpoint: 1200px;
+
+$max-content-width: 1200px;
+$max-central-width: 650px;
+$max-central-width-large: 800px;
+$central-content-margin: ($max-content-width - $max-central-width) * 0.5;
+
+// Header
+// --------------------
+$header-height-top: 3rem;
+$header-height-bottom: 3.2rem;
+$header-height: $header-height-top + $header-height-bottom;
+$header-height-compact: 5rem;
+$bottom-menu-height: 4rem;
+
+
+// Links
+$link-color: $primary-color;
+
+// Buttons
+$min-button-width: 3rem;
+$max-button-width: 14rem;
+
+// Inputs
+$input-border-radius: $small-radius;
+$input-border: solid 1px shade($primary-color, lighter-2);
+$input-border-disabled: solid 1px $gray-color;
+
+// Typography
+
+// Basic modular scale definition
+$modularscale: (
+  base: 1rem,
+  ratio: 1.2 // minor-third
+);
+
+// Font Family
+
+$font-family-base: "Lato", "Sans-Serif";
+$font-family-heading: "Lato", "Sans-Serif";
+
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-bold: 700;
+
+// Paragraph Styles
+$input-color: $body-color;
+$paragraph-color: $body-color;
+$heading-color: $very-dark-gray-color; // #424242;
+$paragraph-margin: 0.4rem;
+$small-text-size: 0.85em;
+
+$base-line-height: 1.3rem;
+
+$spacer: 1rem !default;
+$spacer-half: $spacer*0.5;
+$spacer-third: $spacer*0.333;
+$spacer-quarter: $spacer*0.25;
+
+// Misc
+// --------------------
+$short-transition-duration: 0.25s;
+$medium-transition-duration: 0.5s;
+$long-transition-duration: 1.3s;
+$very-long-transition-duration: 3s;
+

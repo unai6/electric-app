@@ -1,0 +1,21 @@
+@import "./partials/reset";
+// Variables need to be imported first.
+@import "./partials/tokens";
+
+// @import "./partials/layout";
+@import "./partials/common-styles";
+@import "./partials/select";
+@import "./partials/button";
+@import "./partials/form";
+@import "./partials/admin-form";
+@import "./partials/box";
+@import "./partials/grid";
+@import "./partials/helpers";
+@import "./partials/base";
+
+@import "./partials/mixins";
+
+// ----------------------------
+// Styles for other modules used in the project.
+@import "./partials/overrides";
+

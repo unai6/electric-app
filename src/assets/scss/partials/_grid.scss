@@ -1,0 +1,89 @@
+.grid {
+  display: block;
+
+  @include breakpoint(sm) {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: $spacer;
+  }
+
+  &--large-gap {
+    column-gap: $spacer*2;
+  }
+
+  &--2cols {
+    @include breakpoint(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  &--3cols {
+    @include breakpoint(sm) {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  &--4cols {
+    @include breakpoint(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include breakpoint(md) {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+
+  &--5cols {
+    @include breakpoint(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include breakpoint(md) {
+      grid-template-columns: repeat(5, 1fr);
+    }
+  }
+
+  &--6cols {
+    @include breakpoint(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include breakpoint(md) {
+      grid-template-columns: repeat(6, 1fr);
+    }
+  }
+
+  &--12cols {
+    @include breakpoint(sm) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @include breakpoint(md) {
+      grid-template-columns: repeat(12, 1fr);
+    }
+  }
+}
+
+.grid-item {
+  grid-column-end: span 1;
+
+  $columns: 2, 3, 4, 8, 11, 12;
+  @each $column in $columns {
+    &--#{$column}col {
+      grid-column-end: span $column;
+    }
+  }
+
+  &--newrow {
+    grid-column-start: 1;
+  }
+
+  &--fullwidth {
+    grid-column-start: 1;
+    grid-column-end: -1;
+  }
+
+  &--is-flex {
+    display: flex;
+  }
+}

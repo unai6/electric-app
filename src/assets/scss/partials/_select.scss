@@ -1,0 +1,37 @@
+.custom-select {
+  background-color: transparent;
+  color: var(--neutral-shade-9);
+  font-size: ms(0);
+  padding: $spacer-half;
+  color: $body-color;
+  margin-bottom: $spacer-half;
+  font-weight: $font-weight-light;
+  font-family: $font-family-base;
+  font-size: ms(0);
+  border: none;
+  border: 1px solid $primary-color;
+  border-radius: $medium-radius;
+  appearance: none;
+  background-image: url('/icons/down-chevron.svg');
+  background-repeat: no-repeat, repeat;
+  background-position: right 6px;
+  min-width: 6rem;
+  max-width: 18rem;
+
+  @include breakpoint(sm) {
+    max-width: 36rem;
+  }
+
+  &--fullwidth {
+    width: 100%;
+    max-width: none;
+  }
+
+  &--mediumwidth {
+    min-width: 12rem;
+  }
+
+  &:focus {
+    border: 1px solid $primary-color;
+  }
+}

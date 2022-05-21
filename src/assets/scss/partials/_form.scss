@@ -1,0 +1,124 @@
+.form-field {
+  position: relative;
+  margin-top: $spacer-quarter;
+  margin-bottom: $spacer-half;
+
+  &__label {
+    display: block;
+    font-size: ms(-1);
+    font-weight: $font-weight-light;
+    color: $dark-gray-color;
+    margin-bottom: $spacer-quarter;
+  }
+
+  &__message {
+    font-size: ms(-1);
+    margin-top: $spacer-half;
+    margin-left: $spacer-half;
+    margin-bottom: 0;
+    font-weight: $font-weight-regular;
+    line-height: 1;
+
+    &--is-danger {
+      color: $danger-color;
+    }
+
+    &--is-warning {
+      color: $warning-color;
+    }
+
+    &--is-success {
+      color: $success-color;
+    }
+  }
+
+  &__checkbox {
+    position: relative;
+    display: flex;
+    gap: $spacer-third;
+
+    input[type="checkbox"] {
+      height: 18px;
+      width: 18px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      -o-appearance: none;
+      outline: none;
+      cursor: pointer;
+      background: $white-color;
+      border: $input-border;
+      border-radius: $small-radius;
+      transition: transform .2s linear;
+
+      &:checked {
+        position: relative;
+        background: $primary-color;
+        transition: background-color .2s ease-out;
+
+        &:hover {
+          background-color: shade($primary-color, lighter-2);
+          border: 1px solid shade($primary-color, lighter-2);
+        }
+
+        &::before {
+          position: absolute;
+          left: 50%;
+          transform: translate(-50%, 15%);
+          filter: invert(1);
+          content: url('/icons/check-mark-no-bg.svg');
+          height: 12px;
+          width: 12px;
+          border: none;
+        }
+      }
+
+      &:disabled {
+        opacity: 1;
+        color: $dark-gray-color;
+        background-color: $white-color;
+        border: solid 1px $gray-color;
+        cursor: default;
+      }
+    }
+  }
+
+  &__input {
+    position: relative;
+
+    input {
+      border-radius: $input-border-radius;
+      border: $input-border;
+      width: 100%;
+      box-sizing: border-box;
+      font-size: ms(0);
+      padding: $spacer-quarter;
+      color: $body-color;
+      background-color: $white-color;
+      font-family: $font-family-base;
+      font-weight: $font-weight-light;
+
+      &:focus {
+        border: solid 1px $primary-color;
+      }
+
+      &:disabled {
+        opacity: 1;
+        color: $dark-gray-color;
+        background-color: $white-color;
+        border: $input-border-disabled;
+      }
+
+      &:read-only {
+        opacity: 1;
+        cursor: default;
+      }
+    }
+
+    &--has-icon {
+      input {
+        padding-right: 2rem;
+      }
+    }
+  }
+}

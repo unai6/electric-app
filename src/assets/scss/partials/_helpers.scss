@@ -1,0 +1,27 @@
+// Spacing
+$positions: top, right, bottom, left;
+$spacings: ('': 1, '-large': 2, '-extralarge': 3);
+
+@each $position in $positions {
+  @each $spacing, $spacing-value in $spacings {
+    .#{$position}-spacer#{$spacing} {
+      margin-#{$position}: $spacer*$spacing-value;
+    }
+  }
+}
+
+// Positioning
+@each $position in $positions {
+  .float-#{$position}{
+    float: $position;
+  }
+}
+
+// Typography
+$alignments: ('centered': 'center', 'justified': 'justify', 'left': 'left', 'right': 'right');
+
+@each $alignment, $text-align in $alignments {
+  .text-align-#{$alignment} {
+    text-align: #{$text-align};
+  }
+}

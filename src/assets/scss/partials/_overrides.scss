@@ -1,0 +1,48 @@
+
+// Feather icons component
+// ========================================
+.feather {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.5;
+}
+
+
+// vue-toasted style overrides
+// ========================================
+.toasted {
+    &.toasted-primary {
+
+      padding: $spacer-half $spacer !important;
+      border-radius: $medium-radius !important;
+
+      &.error {
+        background: $danger-color !important; // Need !important due to load sequence.
+      }
+
+      &.success {
+        background: $success-color !important;
+      }
+
+      &.info {
+        background: $info-color !important;
+      }
+    }
+}
+
+.toasted-container {
+  &.top-right {
+    .toasted {
+      width: calc(100vw - (3 * #{$spacer})) !important;
+      top: 3em !important;
+      margin: auto;
+
+      @include breakpoint(sm) {
+        left: 2vw !important;
+        width: unset !important;
+        right: 2em !important;
+      }
+    }
+
+  }
+}

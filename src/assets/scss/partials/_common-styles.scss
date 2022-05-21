@@ -1,0 +1,194 @@
+.admin-container {
+  padding-top: $spacer-half;
+
+  &__title-action {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
+    & > * {
+      &:first-child {
+        margin-right: auto;
+      }
+    }
+  }
+
+  &__filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+}
+
+.container {
+  padding: $spacer-half;
+  margin: auto 0;
+
+  border-radius: $small-radius;
+
+  @include breakpoint(sm) {
+    padding: $spacer;
+  }
+
+  &__central-content {
+    max-width: $max-central-width;
+  }
+
+  &--center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &--right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  &--center-all {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+// Utility styles
+.loading {
+  border: 6px solid $primary-color;
+  border-top: 6px solid transparent;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  animation: spin 1.5s linear infinite;
+  // margin: auto;
+
+  &--button {
+    border: 3px solid $primary-color;
+    border-top: 3px solid transparent;
+    width: 12px;
+    height: 12px;
+    margin: 0 $spacer-half;
+  }
+
+  &--big {
+    border: 10px solid $primary-color;
+    border-top: 10px solid transparent;
+    width: 80px;
+    height: 80px;
+  }
+
+  &--center {
+    margin: auto;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+// Vue fade transition styles
+
+// Fade only
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity $medium-transition-duration;
+}
+
+.fade-enter,
+.fade-leave-to {
+  transition: opacity $medium-transition-duration;
+  opacity: 0;
+}
+
+// Slow Fade only
+.slowfade-enter-active,
+.slowfade-leave-active {
+  transition: opacity $long-transition-duration ease-out;
+}
+
+.slowfade-enter,
+.slowfade-leave-to {
+  transition: opacity $long-transition-duration;
+  opacity: 0;
+}
+
+// Slow Fade only
+.delayfade-enter-active,
+.delayfade-leave-active {
+  transition: opacity 2s;
+  transition-delay: 2s;
+}
+
+.delayfade-enter,
+.delayfade-leave-to {
+  transition: opacity 2s;
+  opacity: 0;
+}
+
+.hidden {
+  display: none;
+}
+
+
+// Fade and translate Y
+.move-enter-active,
+.move-leave-active {
+  transition: all $medium-transition-duration;
+}
+
+.move-enter,
+.move-leave-to {
+  transform: translateY(15px);
+  opacity: 0;
+}
+
+.section {
+  margin-bottom: $spacer;
+  background-color: $broken-white-color;
+  padding: $spacer;
+  border-radius: $small-radius;
+  display: flex;
+  flex-direction: column;
+  height: max-content;
+
+  &--is-white {
+    background-color: $white-color;
+  }
+
+  &--is-danger {
+    background-color: shade($danger-color, lighter-4);
+    border: 4px solid $danger-color;
+  }
+
+  &--has-divider {
+    @include breakpoint(sm) {
+      border-radius: 0;
+      border-right: 1px solid $very-light-gray-color;
+      margin-right: 0;
+      padding-right: $spacer*2;
+    }
+  }
+}
+
+.label {
+  color: $dark-gray-color;
+  font-size: ms(0);
+  font-weight: $font-weight-regular;
+  font-family: inherit;
+
+  &--is-danger {
+    font-size: ms(-1);
+    color: $danger-color;
+    margin-top: $spacer-half;
+    margin-bottom: 0;
+    line-height: 1.25;
+  }
+}

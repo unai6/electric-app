@@ -1,0 +1,26 @@
+@use 'sass:math';
+
+@function pow($b, $e) {
+  $value: 1;
+
+  @if $e > 0 {
+    @for $i from 1 through $e {
+      $value: $value * $b;
+    }
+  }
+
+  @else if $e < 0 {
+    @for $i from 1 through -$e {
+      $value: math.div($value, $b);
+    }
+  }
+
+  @return $value;
+}
+
+@function ms($scale) {
+  $base: map-get($modularscale, base);
+  $ratio: map-get($modularscale, ratio);
+
+  @return $base * pow($ratio, $scale);
+}

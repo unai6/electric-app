@@ -1,0 +1,5 @@
+.main-container {
+  display: grid;
+  grid-template-columns: 1fr [content-start] minmax(350px, 700px) [content-end] 1fr;
+  grid-template-rows: 70px auto 100px;
+}
