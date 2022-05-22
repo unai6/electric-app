@@ -16,7 +16,6 @@ const state = reactive({
 const electricData = reactive({})
 
 async function fetchRealTimeElectricData () {
-  console.info('called')
   const today = dayjs().startOf('day').format('YYYY-MM-DDTHH:MM')
   const now = dayjs().format('YYYY-MM-DDTHH:MM')
 
