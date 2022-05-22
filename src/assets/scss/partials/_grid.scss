@@ -67,7 +67,7 @@
 .grid-item {
   grid-column-end: span 1;
 
-  $columns: 2, 3, 4, 8, 11, 12;
+  $columns: 2, 3, 4, 6, 8, 11, 12;
   @each $column in $columns {
     &--#{$column}col {
       grid-column-end: span $column;
