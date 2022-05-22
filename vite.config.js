@@ -18,6 +18,8 @@ export default defineConfig({
           @import "@/assets/scss/partials/_functions.scss";
           @import "@/assets/scss/partials/_grid.scss";
           @import "@/assets/scss/partials/_common-styles.scss";
+          @import "@/assets/scss/partials/_layout.scss";
+          @import "@/assets/scss/partials/_base.scss";
         `,
       },
     },

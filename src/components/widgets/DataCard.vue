@@ -29,5 +29,7 @@ const props = defineProps({
   display: flex;
   flex-direction: column;
   background: $very-light-gray-color;
+  padding: $spacer;
+  border-radius: $small-radius;
 }
 </style>

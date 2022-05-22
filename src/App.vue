@@ -5,7 +5,6 @@ import { RouterView } from 'vue-router'
 
 <template>
   <div id="app">
-    <app-header />
     <router-view class="app__content" />
   </div>
 </template>
