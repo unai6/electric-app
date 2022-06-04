@@ -21,6 +21,7 @@ export default defineConfig({
           @import "@/assets/scss/partials/_layout.scss";
           @import "@/assets/scss/partials/_base.scss";
           @import "@/assets/scss/partials/_button.scss";
+          @import "@/assets/scss/partials/_helpers.scss";
         `,
       },
     },

@@ -15,11 +15,9 @@ const props = defineProps({
 
 <template>
   <div class="data-card">
-    <div v-if="props.title">
-      <h3>
-        {{ props.title }}
-      </h3>
-    </div>
+    <h3 v-if="props.title">
+      {{ props.title }}
+    </h3>
     <slot />
   </div>
 </template>
