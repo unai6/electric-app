@@ -6,13 +6,17 @@ import BaseField from '@/components/widgets/BaseField.vue'
 import BaseModal from '@/components/widgets/BaseModal.vue'
 import DataCard from '@/components/widgets/DataCard.vue'
 
-import { LineChart } from 'vue-chart-3';
-import { Chart, registerables } from "chart.js";
+import { LineChart, BarChart } from 'vue-chart-3'
+import { Chart, registerables } from "chart.js"
 
-Chart.register(...registerables);
+import { useToast } from 'vue-toastification'
 
 import axios from 'axios'
 import dayjs from 'dayjs'
+
+Chart.register(...registerables)
+
+const toast = useToast()
 
 const state = reactive({
   isLoading: true,
@@ -24,13 +28,8 @@ const state = reactive({
   isChartVisible: false,
 })
 
-const getHours = computed(() => {
-  let hours = []
-  for (let i = 1; i <= 11; i++) {
-    hours.push(`${i}:00`)
-  }
-  return hours
-})
+const xsBreakpoint = 649 // This var will be used only in this component for the moment. Move to a config file if necessary in the future.
+const isMobile = computed(() => window.innerWidth <= xsBreakpoint)
 
 onMounted(async () => await fetchRealTimeElectricData())
 
@@ -45,30 +44,38 @@ async function fetchRealTimeElectricData () {
   try {
     const { data } = await axios.get(`https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=${today}&end_date=${todayEndDay}&time_trunc=hour`)
     state.electricData = data
-  
-    const [pvpc, spot] = state.electricData.included
-
-    state.chartData = {
-      labels: getHours.value,
-      datasets: [
-        {
-          responsive: true,
-          label: pvpc.attributes.title,
-          data: pvpc.attributes.values.map(attribute => attribute.value),
-          backgroundColor: pvpc.attributes.color,
-        },
-        {
-          responsive: true,
-          label: spot.attributes.title,
-          data: spot.attributes.values.map(attribute => attribute.value),
-          backgroundColor: spot.attributes.color,
-        },
-      ],
-    }
+    state.chartData = processData(state.electricData.included)
   } catch (err) {
-    console.error(err)
+    if (err) {
+      console.error(err)
+      toast.error('Ha habido un error al procesar los datos. Por favor vuelve a intentarlo.')
+    }
   } finally {
     state.isLoading = false
+  }
+}
+
+function processData (data) {
+  const [pvpc, spot] = data
+
+  const hours = Array(24).fill().map((_, index) => `${index + 1}:00`)
+
+  return {
+    labels: hours,
+    datasets: [
+      {
+        responsive: true,
+        label: pvpc.attributes.title,
+        data: pvpc.attributes.values.map(attribute => attribute.value),
+        backgroundColor: pvpc.attributes.color,
+      },
+      {
+        responsive: true,
+        label: spot.attributes.title,
+        data: spot.attributes.values.map(attribute => attribute.value),
+        backgroundColor: spot.attributes.color,
+      },
+    ],
   }
 }
 
@@ -77,7 +84,7 @@ function openModal () {
 }
 
 function getTitleAndDate (title) {
-  return `${title} ${dayjs().format('DD-MM-YYYY')}`
+  return `${title} - ${dayjs().format('DD-MM-YYYY')}`
 }
 
 const pricesValues = computed(() => state.electricData.included.map(data => ({
@@ -101,12 +108,13 @@ function getClassModifier (value, id) {
 <template>
   <base-loader v-if="state.isLoading" />
   <div v-else class="insular">
-    <button class="button button--secondary button--marginvert" @click="openModal">
-      Ver Gráfico
-    </button>
     <data-card :title="state.electricData.data.attributes.title">
-      <div class="grid grid--2cols">
-        <base-field v-for="data in state.electricData.included" :key="data" :label="getTitleAndDate(data.type)">
+      <button class="button button--secondary button--nomargin" @click="openModal">
+        Ver Gráfico
+      </button>
+      <div class="grid grid--2cols top-spacer-large">
+        <base-field v-for="data in state.electricData.included" :key="data">
+          <h5>{{ getTitleAndDate(data.type) }}</h5>
           <p v-for="attribute in data.attributes.values" :key="attribute.id" class="label insular__price" :class="getClassModifier(attribute.value, data.id)">
             {{ $d(attribute.datetime, 'time') }} - {{ $n(attribute.value, 'currency') }}
           </p>
@@ -120,7 +128,8 @@ function getClassModifier (value, id) {
       :title="state.electricData.data.attributes.title"
     >
       <template #body>
-        <line-chart class="insular__chart" :chart-data="state.chartData" />
+        <bar-chart v-if="isMobile" class="insular__chart" :chart-data="state.chartData" />
+        <line-chart v-else class="insular__chart" :chart-data="state.chartData" />
       </template>
     </base-modal>
   </div>

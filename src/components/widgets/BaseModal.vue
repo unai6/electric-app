@@ -49,7 +49,7 @@ function closeModal () {
 <template>
   <dialog ref="dialogRef" class="modal">
     <slot name="closeTag">
-      <button class="modal__close button button--secondary button__close-tag" @click="closeModal" />
+      <button class="modal__close" @click="closeModal" />
     </slot>
     <slot name="header"> 
       <h1>{{ title }}</h1>
@@ -71,7 +71,11 @@ function closeModal () {
   position: relative;
   border: none;
   border-radius: $medium-radius;
-  width: 60vw;
+  width: 85vw;
+
+  @include breakpoint(sm) {
+    width: 60vw;
+  }
 
   &::backdrop {
     background: rgba(0,0,0, .8);
@@ -80,7 +84,18 @@ function closeModal () {
   &__close {
     position: absolute;
     right: $spacer;
-  }
+    background: none;
+    color: $black-color;
+    font-size: ms(1);
+    border: none;
+    cursor: pointer;
 
+    &::after {
+      position: absolute;
+      content: 'X';
+      right: $spacer;
+      top: 0;
+    }
+  }
 }
 </style>
