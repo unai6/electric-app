@@ -1,12 +1,12 @@
 <script setup>
-import { reactive, onMounted, onBeforeUnmount, computed, ref, watch } from 'vue'
+import { reactive, onMounted, onBeforeUnmount, computed, ref } from 'vue'
 
 import BaseLoader from '@/components/widgets/BaseLoader.vue'
 import BaseField from '@/components/widgets/BaseField.vue'
 import BaseModal from '@/components/widgets/BaseModal.vue'
 import DataCard from '@/components/widgets/DataCard.vue'
 
-import { Bar as BarChart, Line as LineChart } from 'vue-chartjs'
+import { Line as LineChart } from 'vue-chartjs'
 import { Chart, registerables } from 'chart.js'
 import i18n from '@/lang/i18n'
 
@@ -28,37 +28,52 @@ const state = reactive({
   charTitle: '',
   chartOptions: {
     pointBackgroundColor: 'white',
-    pointBorderColor: 'rgba(0,0,0, .2)',
     responsive: true,
     borderColor: 'lightGray',
-    borderWidth: 1,
+    borderWidth: 2,
   },
   isChartVisible: false,
-  gradient: null,
 })
 
 const lineChartRef = ref()
-const gradient = ref()
-
 
 const xsBreakpoint = 649 // This var will be used only in this component for the moment. Move to a config file if necessary in the future.
 const isMobile = computed(() => window.innerWidth <= xsBreakpoint)
 
 onMounted(async () => {
   await fetchRealTimeElectricData()
-  
-    gradient.value = lineChartRef.value.chart.ctx.createLinearGradient(0, 0, 0, 450)
-    gradient.value.addColorStop(0, 'rgba(255, 0,0, 0.5)')
-    gradient.value.addColorStop(0, 'rgba(255, 0,0, 0.5)')
-    gradient.value.addColorStop(1, 'rgba(255, 0, 0, 0)')
 })
 
-watch(lineChartRef, (value) => {
-  value = value.chart.ctx.createLinearGradient(0, 0, 0, 450)
-  value.addColorStop(0, 'rgba(255, 0,0, 0.5)')
-  value.addColorStop(0, 'rgba(255, 0,0, 0.5)')
-  value.addColorStop(1, 'rgba(255, 0, 0, 0)')
-})
+function hexToRGBA(h, opacity) {
+  let r = 0, g = 0, b = 0;
+
+  // 3 digits
+  if (h.length == 4) {
+    r = "0x" + h[1] + h[1];
+    g = "0x" + h[2] + h[2];
+    b = "0x" + h[3] + h[3];
+
+  // 6 digits
+  } else if (h.length == 7) {
+    r = "0x" + h[1] + h[2];
+    g = "0x" + h[3] + h[4];
+    b = "0x" + h[5] + h[6];
+  }
+  return `rgba(${+r},${+g},${+b},${opacity})`;
+}
+
+function getGradient (context) {1
+  if (context) {
+    const chart = context.chart
+    const { ctx } = chart
+    const gradient = ctx.createLinearGradient(0, 0, 0, 850)
+    gradient.addColorStop(0, hexToRGBA(context.dataset.color, context.dataset.opacity[0]))
+    gradient.addColorStop(0.5, hexToRGBA(context.dataset.color, context.dataset.opacity[1]))
+    gradient.addColorStop(1, hexToRGBA(context.dataset.color, context.dataset.opacity[2]))
+
+    return gradient
+  }
+}
 
 onBeforeUnmount(() => clearInterval(interval))
 
@@ -89,16 +104,22 @@ function processData (data) {
     labels: hours,
     datasets: [
       {
-        label: pvpc.attributes.title,
-        data: pvpc.attributes.values.map(attribute => attribute.value),
-        backgroundColor: lineChartRef.value,
-        fill: true,
-      },
-      {
         label: spot.attributes.title,
         data: spot.attributes.values.map(attribute => attribute.value),
-        backgroundColor: spot.attributes.color,
+        backgroundColor: getGradient,
+        color: spot.attributes.color,
+        borderColor: 'gray',
         fill: true,
+        opacity: [0.9, 0.25, 0],
+      },
+      {
+        label: pvpc.attributes.title,
+        data: pvpc.attributes.values.map(attribute => attribute.value),
+        backgroundColor: getGradient,
+        color: pvpc.attributes.color,
+        borderColor: 'gray',
+        fill: true,
+        opacity: [0.25, 0.5, 0],
       },
     ],
   }
@@ -108,14 +129,15 @@ function openModal () {
   state.isChartVisible = true
 }
 
-const pricesValues = computed(() => state.electricData.included.map(data => ({
-  max: Math.max(data.attributes.values.map(at => at.value).reduce((acc, c) => acc > c ? acc : c), 0),
+const globalRefferencePrices = computed(() => state.electricData.included.map(data => ({
+  max: Math.max(data.attributes.values.map(at => at.value).reduce((acc, c) => acc > c ? acc : c)),
   average: data.attributes.values.map(at => at.value).reduce((acc, c) => acc + c) / data.attributes.values.length,
   id: data.id,
 })))
 
+
 function getClassModifier (value, id) {
-  return pricesValues.value.map(data => {
+  return globalRefferencePrices.value.map(data => {
     if (data.id === id) {
       return data.max - (data.max * 0.10) < value 
         ? 'insular__price--expensive' 
@@ -171,20 +193,13 @@ function getRefferencePricesByCollection (attributes) {
       :title="state.electricData.data.attributes.title"
     >
       <template #body>
-        <bar-chart
-          v-if="isMobile"
-          css-classes="insular__chart"
-          :chart-data="state.chartData"
-          :chart-options="state.chartOptions"
-        />
         <line-chart
-          v-else
           ref="lineChartRef"
           css-classes="insular__chart"
           :chart-data="state.chartData"
           :chart-options="state.chartOptions"
-          :height="150"
-        />
+          :height="isMobile ? 400 : 150"
+        /> 
       </template>
     </base-modal>
   </div>
