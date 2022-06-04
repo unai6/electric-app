@@ -18,6 +18,7 @@ const state = reactive({
   isLoading: true,
   electricData: {},
   pvpcData: {},
+  spotData: {},
   chartData: null,
   charTitle: '',
   isChartVisible: false,
@@ -45,18 +46,22 @@ async function fetchRealTimeElectricData () {
     const { data } = await axios.get(`https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=${today}&end_date=${todayEndDay}&time_trunc=hour`)
     state.electricData = data
   
-    // eslint-disable-next-line no-unused-vars
-    const [pvpc, _] = state.electricData.included
-    state.pvpcData = pvpc
+    const [pvpc, spot] = state.electricData.included
 
     state.chartData = {
       labels: getHours.value,
       datasets: [
         {
           responsive: true,
-          label: state.pvpcData.attributes.title,
-          data: state.pvpcData.attributes.values.map(attribute => attribute.value),
-          backgroundColor: state.pvpcData.attributes.color,
+          label: pvpc.attributes.title,
+          data: pvpc.attributes.values.map(attribute => attribute.value),
+          backgroundColor: pvpc.attributes.color,
+        },
+        {
+          responsive: true,
+          label: spot.attributes.title,
+          data: spot.attributes.values.map(attribute => attribute.value),
+          backgroundColor: spot.attributes.color,
         },
       ],
     }
@@ -72,39 +77,50 @@ function openModal () {
 }
 
 function getTitleAndDate (title) {
-  state.chartTitle = title
   return `${title} ${dayjs().format('DD-MM-YYYY')}`
 }
 
-function getAttributeValues (value) {
-  console.info(value, 'value')
+const pricesValues = computed(() => state.electricData.included.map(data => ({
+  minValue: Math.max(data.attributes.values.map(at => at.value).reduce((acc, c) => acc < c ? acc : c), 0),
+  maxValue: Math.max(data.attributes.values.map(at => at.value).reduce((acc, c) => acc > c ? acc : c), 0),
+  mean: Math.round(data.attributes.values.map(at => at.value).reduce((acc, c) => acc + c) / data.attributes.values.length),
+  id: data.id,
+})))
+
+
+function getClassModifier (value, id) {
+  return pricesValues.value.map(data => {
+    if (data.id === id) {
+      return data.maxValue - (data.maxValue * 0.10) < value ? 'insular__price--expensive' : value < data.maxValue && value >= data.mean ? 'insular__price--regular' : 'insular__price--cheap'
+    }
+  })
 }
 
 </script>
 
 <template>
   <base-loader v-if="state.isLoading" />
-  <div v-else class="insular-price">
-    <button class="button button--secondary" @click="openModal">
+  <div v-else class="insular">
+    <button class="button button--secondary button--marginvert" @click="openModal">
       Ver Gráfico
-    </button> 
+    </button>
     <data-card :title="state.electricData.data.attributes.title">
       <div class="grid grid--2cols">
-        <base-field :label="getTitleAndDate(state.pvpcData.type)">
-          <p v-for="attribute in state.pvpcData.attributes.values" :key="attribute.id" class="label" @load="getAttributeValues(attribute.value)">
+        <base-field v-for="data in state.electricData.included" :key="data" :label="getTitleAndDate(data.type)">
+          <p v-for="attribute in data.attributes.values" :key="attribute.id" class="label insular__price" :class="getClassModifier(attribute.value, data.id)">
             {{ $d(attribute.datetime, 'time') }} - {{ $n(attribute.value, 'currency') }}
           </p>
-        </base-field>
+        </base-field> 
       </div>
     </data-card>
     <base-modal
       v-model="state.isChartVisible"
       with-close-tag
       :with-actions="false"
-      :title="state.chartTitle"
+      :title="state.electricData.data.attributes.title"
     >
       <template #body>
-        <line-chart class="insular-price__chart" :chart-data="state.chartData" />
+        <line-chart class="insular__chart" :chart-data="state.chartData" />
       </template>
     </base-modal>
   </div>
@@ -112,10 +128,29 @@ function getAttributeValues (value) {
 
 
 <style lang="scss">
-.insular-price {
+.insular {
 
   &__chart {
     height: 50vh;
+  }
+
+  &__price {
+    color: $white-color;
+    border: none;
+    padding: $spacer*0.5;
+    border-radius: $small-radius;
+
+    &--cheap {
+      background: $success-color;
+    }
+
+    &--regular {
+      background: $warning-color;
+    }
+
+    &--expensive {
+      background: $danger-color;
+    }
   }
 }
 </style>
