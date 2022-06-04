@@ -44,6 +44,8 @@ onMounted(async () => {
   await fetchRealTimeElectricData()
 })
 
+
+// TODO: If this function is used anywhere else, place it into a config file.
 function hexToRGBA(h, opacity) {
   let r = 0, g = 0, b = 0;
 
