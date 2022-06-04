@@ -207,6 +207,17 @@ button {
     }
   }
 
+  &__close-tag {
+    background: none;
+    color: $black-color;
+    height: 2rem;
+
+    &::after {
+      position: absolute;
+      content: 'X';
+    }
+  }
+
 }
 
 .iconbutton {
