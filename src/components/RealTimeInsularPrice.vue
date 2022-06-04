@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted, onBeforeUnmount, computed } from 'vue'
+import { reactive, onMounted, onBeforeUnmount, computed, ref, watch } from 'vue'
 
 import BaseLoader from '@/components/widgets/BaseLoader.vue'
 import BaseField from '@/components/widgets/BaseField.vue'
@@ -27,16 +27,38 @@ const state = reactive({
   chartData: null,
   charTitle: '',
   chartOptions: {
+    pointBackgroundColor: 'white',
+    pointBorderColor: 'rgba(0,0,0, .2)',
     responsive: true,
-    borderWidth: 2,
+    borderColor: 'lightGray',
+    borderWidth: 1,
   },
   isChartVisible: false,
+  gradient: null,
 })
+
+const lineChartRef = ref()
+const gradient = ref()
+
 
 const xsBreakpoint = 649 // This var will be used only in this component for the moment. Move to a config file if necessary in the future.
 const isMobile = computed(() => window.innerWidth <= xsBreakpoint)
 
-onMounted(async () => await fetchRealTimeElectricData())
+onMounted(async () => {
+  await fetchRealTimeElectricData()
+  
+    gradient.value = lineChartRef.value.chart.ctx.createLinearGradient(0, 0, 0, 450)
+    gradient.value.addColorStop(0, 'rgba(255, 0,0, 0.5)')
+    gradient.value.addColorStop(0, 'rgba(255, 0,0, 0.5)')
+    gradient.value.addColorStop(1, 'rgba(255, 0, 0, 0)')
+})
+
+watch(lineChartRef, (value) => {
+  value = value.chart.ctx.createLinearGradient(0, 0, 0, 450)
+  value.addColorStop(0, 'rgba(255, 0,0, 0.5)')
+  value.addColorStop(0, 'rgba(255, 0,0, 0.5)')
+  value.addColorStop(1, 'rgba(255, 0, 0, 0)')
+})
 
 onBeforeUnmount(() => clearInterval(interval))
 
@@ -62,21 +84,21 @@ async function fetchRealTimeElectricData () {
 
 function processData (data) {
   const [pvpc, spot] = data
-
   const hours = Array(24).fill().map((_, index) => `${index + 1}:00`)
-
   return {
     labels: hours,
     datasets: [
       {
         label: pvpc.attributes.title,
         data: pvpc.attributes.values.map(attribute => attribute.value),
-        backgroundColor: pvpc.attributes.color,
+        backgroundColor: lineChartRef.value,
+        fill: true,
       },
       {
         label: spot.attributes.title,
         data: spot.attributes.values.map(attribute => attribute.value),
         backgroundColor: spot.attributes.color,
+        fill: true,
       },
     ],
   }
@@ -134,6 +156,7 @@ function getClassModifier (value, id) {
         />
         <line-chart
           v-else
+          ref="lineChartRef"
           css-classes="insular__chart"
           :chart-data="state.chartData"
           :chart-options="state.chartOptions"
