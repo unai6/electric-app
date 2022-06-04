@@ -31,6 +31,12 @@ const getHours = computed(() => {
   return hours
 })
 
+onMounted(async () => await fetchRealTimeElectricData())
+
+onBeforeUnmount(() => clearInterval(interval))
+
+const interval = setInterval(fetchRealTimeElectricData, 1000 * 1000)
+
 async function fetchRealTimeElectricData () {
   const today = dayjs().startOf('day').format('YYYY-MM-DDTHH:MM')
   const todayEndDay = dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
@@ -39,6 +45,7 @@ async function fetchRealTimeElectricData () {
     const { data } = await axios.get(`https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=${today}&end_date=${todayEndDay}&time_trunc=hour`)
     state.electricData = data
   
+    // eslint-disable-next-line no-unused-vars
     const [pvpc, _] = state.electricData.included
     state.pvpcData = pvpc
 
@@ -59,12 +66,6 @@ async function fetchRealTimeElectricData () {
     state.isLoading = false
   }
 }
-
-onMounted(async () => await fetchRealTimeElectricData())
-
-onBeforeUnmount(() => clearInterval(interval))
-
-const interval = setInterval(fetchRealTimeElectricData, 1000 * 1000)
 
 function openModal () {
   state.isChartVisible = true
