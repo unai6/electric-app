@@ -6,8 +6,9 @@ import BaseField from '@/components/widgets/BaseField.vue'
 import BaseModal from '@/components/widgets/BaseModal.vue'
 import DataCard from '@/components/widgets/DataCard.vue'
 
-import { LineChart, BarChart } from 'vue-chart-3'
-import { Chart, registerables } from "chart.js"
+import { Bar as BarChart, Line as LineChart } from 'vue-chartjs'
+import { Chart, registerables } from 'chart.js'
+// import i18n from '@/lang/i18n'
 
 import { useToast } from 'vue-toastification'
 
@@ -16,15 +17,19 @@ import dayjs from 'dayjs'
 
 Chart.register(...registerables)
 
+// const { d }  = i18n.global || i18n
+
 const toast = useToast()
 
 const state = reactive({
   isLoading: true,
   electricData: {},
-  pvpcData: {},
-  spotData: {},
   chartData: null,
   charTitle: '',
+  chartOptions: {
+    responsive: true,
+    borderWidth: 2,
+  },
   isChartVisible: false,
 })
 
@@ -64,13 +69,11 @@ function processData (data) {
     labels: hours,
     datasets: [
       {
-        responsive: true,
         label: pvpc.attributes.title,
         data: pvpc.attributes.values.map(attribute => attribute.value),
         backgroundColor: pvpc.attributes.color,
       },
       {
-        responsive: true,
         label: spot.attributes.title,
         data: spot.attributes.values.map(attribute => attribute.value),
         backgroundColor: spot.attributes.color,
@@ -81,10 +84,6 @@ function processData (data) {
 
 function openModal () {
   state.isChartVisible = true
-}
-
-function getTitleAndDate (title) {
-  return `${title} - ${dayjs().format('DD-MM-YYYY')}`
 }
 
 const pricesValues = computed(() => state.electricData.included.map(data => ({
@@ -102,19 +101,18 @@ function getClassModifier (value, id) {
     }
   })
 }
-
 </script>
 
 <template>
   <base-loader v-if="state.isLoading" />
   <div v-else class="insular">
-    <data-card :title="state.electricData.data.attributes.title">
+    <data-card :title="`${state.electricData.data.attributes.title} - ( ${$d(new Date, 'longDayMonthHour').toUpperCase()} )`">
       <button class="button button--secondary button--nomargin" @click="openModal">
         Ver Gráfico
       </button>
       <div class="grid grid--2cols top-spacer-large">
         <base-field v-for="data in state.electricData.included" :key="data">
-          <h5>{{ getTitleAndDate(data.type) }}</h5>
+          <h5>{{ data.type }}</h5>
           <p v-for="attribute in data.attributes.values" :key="attribute.id" class="label insular__price" :class="getClassModifier(attribute.value, data.id)">
             {{ $d(attribute.datetime, 'time') }} - {{ $n(attribute.value, 'currency') }}
           </p>
@@ -128,8 +126,19 @@ function getClassModifier (value, id) {
       :title="state.electricData.data.attributes.title"
     >
       <template #body>
-        <bar-chart v-if="isMobile" class="insular__chart" :chart-data="state.chartData" />
-        <line-chart v-else class="insular__chart" :chart-data="state.chartData" />
+        <bar-chart
+          v-if="isMobile"
+          css-classes="insular__chart"
+          :chart-data="state.chartData"
+          :chart-options="state.chartOptions"
+        />
+        <line-chart
+          v-else
+          css-classes="insular__chart"
+          :chart-data="state.chartData"
+          :chart-options="state.chartOptions"
+          :height="150"
+        />
       </template>
     </base-modal>
   </div>
