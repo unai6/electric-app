@@ -23,6 +23,7 @@
     "sass": "^1.52.1",
     "vue": "^3.2.25",
     "vue-chart-3": "^3.1.8",
+    "vue-chartjs": "^4.1.1",
     "vue-i18n": "^9.1.10",
     "vue-router": "^4.0.15",
     "vue-toastification": "^2.0.0-rc.5"
