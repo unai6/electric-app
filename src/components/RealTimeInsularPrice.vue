@@ -8,7 +8,7 @@ import DataCard from '@/components/widgets/DataCard.vue'
 
 import { Bar as BarChart, Line as LineChart } from 'vue-chartjs'
 import { Chart, registerables } from 'chart.js'
-// import i18n from '@/lang/i18n'
+import i18n from '@/lang/i18n'
 
 import { useToast } from 'vue-toastification'
 
@@ -17,7 +17,7 @@ import dayjs from 'dayjs'
 
 Chart.register(...registerables)
 
-// const { d }  = i18n.global || i18n
+const { n }  = i18n.global || i18n
 
 const toast = useToast()
 
@@ -109,19 +109,29 @@ function openModal () {
 }
 
 const pricesValues = computed(() => state.electricData.included.map(data => ({
-  minValue: Math.max(data.attributes.values.map(at => at.value).reduce((acc, c) => acc < c ? acc : c), 0),
-  maxValue: Math.max(data.attributes.values.map(at => at.value).reduce((acc, c) => acc > c ? acc : c), 0),
-  mean: Math.round(data.attributes.values.map(at => at.value).reduce((acc, c) => acc + c) / data.attributes.values.length),
+  max: Math.max(data.attributes.values.map(at => at.value).reduce((acc, c) => acc > c ? acc : c), 0),
+  average: data.attributes.values.map(at => at.value).reduce((acc, c) => acc + c) / data.attributes.values.length,
   id: data.id,
 })))
-
 
 function getClassModifier (value, id) {
   return pricesValues.value.map(data => {
     if (data.id === id) {
-      return data.maxValue - (data.maxValue * 0.10) < value ? 'insular__price--expensive' : value < data.maxValue && value >= data.mean ? 'insular__price--regular' : 'insular__price--cheap'
+      return data.max - (data.max * 0.10) < value 
+        ? 'insular__price--expensive' 
+        : value < data.max && value >= data.average 
+          ? 'insular__price--regular' 
+          : 'insular__price--cheap'
     }
   })
+}
+
+function getRefferencePricesByCollection (attributes) {
+  return {
+    max: n(Math.max(...attributes.map(att => att.value)), 'currency'),
+    average: n(attributes.map(at => at.value).reduce((acc, c) => acc + c) / attributes.length, 'currency'),
+    min: n(attributes.map(at => at.value).reduce((acc, c) => acc < c ? acc : c), 'currency'),
+  }
 }
 </script>
 
@@ -135,9 +145,22 @@ function getClassModifier (value, id) {
       <div class="grid grid--2cols top-spacer-large">
         <base-field v-for="data in state.electricData.included" :key="data">
           <h5>{{ data.type }}</h5>
-          <p v-for="attribute in data.attributes.values" :key="attribute.id" class="label insular__price" :class="getClassModifier(attribute.value, data.id)">
-            {{ $d(attribute.datetime, 'time') }} - {{ $n(attribute.value, 'currency') }}
-          </p>
+          <div class="buttonset buttonset--spaced">
+            <button class="button button--is-danger">
+              Máximo <br>{{ getRefferencePricesByCollection(data.attributes.values).max }}
+            </button>
+            <button class="button button--is-warning">
+              Medio <br>{{ getRefferencePricesByCollection(data.attributes.values).average }}
+            </button>
+            <button class="button button--success">
+              Mínimo <br>{{ getRefferencePricesByCollection(data.attributes.values).min }}
+            </button>
+          </div>
+          <div v-for="attribute in data.attributes.values" :key="attribute.id">
+            <p class="label insular__price" :class="getClassModifier(attribute.value, data.id)">
+              {{ $d(attribute.datetime, 'time') }} - {{ $n(attribute.value, 'currency') }}
+            </p>
+          </div>
         </base-field> 
       </div>
     </data-card>
