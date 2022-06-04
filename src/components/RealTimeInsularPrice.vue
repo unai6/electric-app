@@ -136,7 +136,7 @@ function getClassModifier (value, id) {
 
   &__price {
     color: $white-color;
-    border: 1px solid $secondary-color;
+    border: none;
     padding: $spacer*0.5;
     border-radius: $small-radius;
 
