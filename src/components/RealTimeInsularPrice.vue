@@ -6,9 +6,10 @@ import BaseField from '@/components/widgets/BaseField.vue'
 import BaseModal from '@/components/widgets/BaseModal.vue'
 import DataCard from '@/components/widgets/DataCard.vue'
 
+import i18n from '@/lang/i18n'
+
 import { Line as LineChart } from 'vue-chartjs'
 import { Chart, registerables } from 'chart.js'
-import i18n from '@/lang/i18n'
 
 import { useToast } from 'vue-toastification'
 
@@ -139,8 +140,6 @@ const getGlobalRefferencePrices = computed(() => state.electricData.included.map
   id: data.id,
 })))
 
-console.info(getGlobalRefferencePrices)
-
 function getClassModifier (value, id) {
   return getGlobalRefferencePrices.value.map(data => {
     if (data.id === id) {
@@ -160,6 +159,12 @@ function getRefferencePricesByCollection (attributes) {
     min: n(attributes.map(at => at.value).reduce((acc, c) => acc < c ? acc : c), 'currency'),
   }
 }
+function getIsCurrentTime (datetime) {
+  const parsedDateTime = dayjs(datetime).format('H')
+  const now = dayjs().format('H')
+  return parsedDateTime === now ? String.fromCodePoint(0x1F551) : null
+}
+
 </script>
 
 <template>
@@ -185,7 +190,7 @@ function getRefferencePricesByCollection (attributes) {
           </div>
           <div v-for="attribute in data.attributes.values" :key="attribute.id">
             <p class="label insular__price" :class="getClassModifier(attribute.value, data.id)">
-              {{ $d(attribute.datetime, 'time') }} - {{ $n(attribute.value, 'currency') }}
+              {{ $d(attribute.datetime, 'time') }} - {{ $n(attribute.value, 'currency') }} <span class="float-right">{{ getIsCurrentTime(attribute.datetime) }}</span>
             </p>
           </div>
         </base-field> 
