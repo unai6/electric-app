@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted, onBeforeUnmount, computed, ref } from 'vue'
+import { reactive, onMounted, onBeforeUnmount, computed } from 'vue'
 
 import BaseLoader from '@/components/widgets/BaseLoader.vue'
 import BaseField from '@/components/widgets/BaseField.vue'
@@ -35,8 +35,6 @@ const state = reactive({
   },
   isChartVisible: false,
 })
-
-const lineChartRef = ref()
 
 const xsBreakpoint = 649 // This var will be used only in this component for the moment. Move to a config file if necessary in the future.
 const isMobile = computed(() => window.innerWidth <= xsBreakpoint)
@@ -204,7 +202,6 @@ function getIsCurrentTime (datetime) {
     >
       <template #body>
         <line-chart
-          ref="lineChartRef"
           css-classes="insular__chart"
           :chart-data="state.chartData"
           :chart-options="state.chartOptions"
