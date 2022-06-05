@@ -27,7 +27,7 @@ const state = reactive({
   chartData: null,
   charTitle: '',
   chartOptions: {
-    pointBackgroundColor: 'white',
+    pointBackgroundColor: 'transparent',
     responsive: true,
     borderColor: 'lightGray',
     borderWidth: 2,
@@ -46,20 +46,20 @@ onMounted(async () => {
 
 
 // TODO: If this function is used anywhere else, place it into a config file.
-function hexToRGBA(h, opacity) {
+function hexToRGBA(hex, opacity) {
   let r = 0, g = 0, b = 0
 
   // 3 digits
-  if (h.length == 4) {
-    r = "0x" + h[1] + h[1]
-    g = "0x" + h[2] + h[2]
-    b = "0x" + h[3] + h[3]
+  if (hex.length == 4) {
+    r = "0x" + hex[1] + hex[1]
+    g = "0x" + hex[2] + hex[2]
+    b = "0x" + hex[3] + hex[3]
 
   // 6 digits
-  } else if (h.length == 7) {
-    r = "0x" + h[1] + h[2]
-    g = "0x" + h[3] + h[4]
-    b = "0x" + h[5] + h[6]
+  } else if (hex.length == 7) {
+    r = "0x" + hex[1] + hex[2]
+    g = "0x" + hex[3] + hex[4]
+    b = "0x" + hex[5] + hex[6]
   }
   return `rgba(${+r},${+g},${+b},${opacity})`
 }
@@ -68,9 +68,9 @@ function getGradient (context) {
   if (context) {
     const chart = context.chart
     const { ctx } = chart
-    const gradient = ctx.createLinearGradient(0, 0, 0, 850)
+    const gradient = ctx.createLinearGradient(0, 0, 0, 1000)
     gradient.addColorStop(0, hexToRGBA(context.dataset.color, context.dataset.opacity[0]))
-    gradient.addColorStop(0.5, hexToRGBA(context.dataset.color, context.dataset.opacity[1]))
+    gradient.addColorStop(0.6, hexToRGBA(context.dataset.color, context.dataset.opacity[1]))
     gradient.addColorStop(1, hexToRGBA(context.dataset.color, context.dataset.opacity[2]))
 
     return gradient
@@ -110,18 +110,20 @@ function processData (data) {
         data: spot.attributes.values.map(attribute => attribute.value),
         backgroundColor: getGradient,
         color: spot.attributes.color,
-        borderColor: 'gray',
+        borderColor: 'transparent',
         fill: true,
-        opacity: [0.9, 0.25, 0],
+        opacity: [0.9, 0.75, 0],
+        tension: 0.3,
       },
       {
         label: pvpc.attributes.title,
         data: pvpc.attributes.values.map(attribute => attribute.value),
         backgroundColor: getGradient,
         color: pvpc.attributes.color,
-        borderColor: 'gray',
+        borderColor: 'transparent',
         fill: true,
-        opacity: [0.25, 0.5, 0],
+        opacity: [0.9, 0.5, 0],
+        tension: 0.3,
       },
     ],
   }
@@ -131,15 +133,16 @@ function openModal () {
   state.isChartVisible = true
 }
 
-const globalRefferencePrices = computed(() => state.electricData.included.map(data => ({
-  max: Math.max(data.attributes.values.map(at => at.value).reduce((acc, c) => acc > c ? acc : c)),
+const getGlobalRefferencePrices = computed(() => state.electricData.included.map(data => ({
+  max: data.attributes.values.map(at => at.value).reduce((acc, c) => acc > c ? acc : c),
   average: data.attributes.values.map(at => at.value).reduce((acc, c) => acc + c) / data.attributes.values.length,
   id: data.id,
 })))
 
+console.info(getGlobalRefferencePrices)
 
 function getClassModifier (value, id) {
-  return globalRefferencePrices.value.map(data => {
+  return getGlobalRefferencePrices.value.map(data => {
     if (data.id === id) {
       return data.max - (data.max * 0.10) < value 
         ? 'insular__price--expensive' 
