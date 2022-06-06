@@ -11,18 +11,6 @@ const routes = [
     meta: { public: true },
   },
   {
-    path: '/market',
-    name: 'market',
-    component: () => import('@/views/MarketPage.vue'),
-    meta: { public: true },
-  },
-  {
-    path: '/balance',
-    name: 'balance',
-    component: import('@/views/BalancePage.vue'),
-    meta: { public: true },
-  },
-  {
     path: '/no-encontrada',
     name: 'notFound',
     component: NotFoundPage,
