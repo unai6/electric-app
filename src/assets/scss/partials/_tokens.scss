@@ -75,8 +75,8 @@ $central-content-margin: ($max-content-width - $max-central-width) * 0.5;
 
 // Header
 // --------------------
-$header-height-top: 3rem;
-$header-height-bottom: 3.2rem;
+$header-height-top: 1.5rem;
+$header-height-bottom: 1.5rem;
 $header-height: $header-height-top + $header-height-bottom;
 $header-height-compact: 5rem;
 $bottom-menu-height: 4rem;
@@ -131,4 +131,3 @@ $short-transition-duration: 0.25s;
 $medium-transition-duration: 0.5s;
 $long-transition-duration: 1.3s;
 $very-long-transition-duration: 3s;
-
