@@ -13,8 +13,8 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
     <div class="header__top">
       <div class="header__brand">
         <img src="/images/logo_eslectric192x192.png" alt="Logo Eslectric">
+        <span class="label"><b>Eslectric</b></span>
       </div>
-      <span class="label"><b>Eslectric</b></span>
       <div class="header__side-container">
         <div class="header__logout-container">
           <p class="header__version">
@@ -99,6 +99,9 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
     margin-top: auto;
     margin-bottom: auto;
     width: $header-height-top*1.6*0.65; // 1.6 is the ratio between width and height for this logo.
+    display: flex;
+    align-items: center;
+    grid-column-gap: $spacer*0.5;
 
     img {
       display: block;
