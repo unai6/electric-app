@@ -81,11 +81,14 @@ onBeforeUnmount(() => clearInterval(interval))
 const interval = setInterval(fetchRealTimeElectricData, 1000 * 1000)
 
 async function fetchRealTimeElectricData () {
-  const today = dayjs().startOf('day').format('YYYY-MM-DDTHH:MM')
   const todayEndDay = dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
 
+  const startOfYear = dayjs('2022-01-01').startOf('day').format('YYYY-MM-DDTHH:MM')
+
   try {
-    const { data } = await axios.get(`https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=${today}&end_date=${todayEndDay}&time_trunc=hour`)
+    const { data } = await axios.get(`https://apidatos.ree.es/es/datos/mercados/componentes-precio-energia-cierre-desglose?start_date=${startOfYear}&end_date=${todayEndDay}&time_trunc=month`)
+    console.infno(data, 'data')
+    
     state.electricData = data
     state.chartData = processData(state.electricData.included)
   } catch (err) {
@@ -176,18 +179,18 @@ function getIsCurrentTime (datetime) {
         <base-field v-for="data in state.electricData.included" :key="data">
           <h5>{{ data.type }}</h5>
           <div class="buttonset buttonset--spaced">
-            <button class="button button--is-danger insular__stat">
+            <button class="button button--is-danger">
               Máximo <br>{{ getRefferencePricesByCollection(data.attributes.values).max }}
             </button>
-            <button class="button button--is-warning insular__stat">
+            <button class="button button--is-warning">
               Medio <br>{{ getRefferencePricesByCollection(data.attributes.values).average }}
             </button>
-            <button class="button button--success insular__stat">
+            <button class="button button--success">
               Mínimo <br>{{ getRefferencePricesByCollection(data.attributes.values).min }}
             </button>
           </div>
           <div v-for="attribute in data.attributes.values" :key="attribute.id">
-            <p class="insular__price text-align-centered" :class="getClassModifier(attribute.value, data.id)">
+            <p class="label insular__price text-align-centered" :class="getClassModifier(attribute.value, data.id)">
               {{ getIsCurrentTime(attribute.datetime) }} {{ $d(attribute.datetime, 'time') }} - {{ $n(attribute.value, 'currency') }}
             </p>
           </div>
@@ -216,21 +219,11 @@ function getIsCurrentTime (datetime) {
 <style lang="scss">
 .insular {
 
-  @include breakpoint(sm) {
-    margin-top: calc(#{$header-height} - #{$spacer*3});
-  }
-
   &__chart {
     height: 50vh;
   }
 
-  &__stat {
-    font-weight: $font-weight-bold;
-  }
-
   &__price {
-    font-size: ms(0);
-    font-weight: $font-weight-regular;
     color: $white-color;
     border: none;
     padding: $spacer*0.5;

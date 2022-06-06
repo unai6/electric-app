@@ -6,7 +6,19 @@ const routes = [
     path: '/',
     name: 'dashboard',
     component: DashboardPage,
-    meta: { public: true, unauthenticatedOnly: true },
+    meta: { public: true },
+  },
+  {
+    path: '/market',
+    name: 'market',
+    component: DashboardPage,
+    meta: { public: true},
+  },
+  {
+    path: '/balance',
+    name: 'balance',
+    component: DashboardPage,
+    meta: { public: true },
   },
 ]
 
