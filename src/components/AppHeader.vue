@@ -1,9 +1,5 @@
 <script setup>
 import { computed } from 'vue'
-// import { useRouter } from 'vue-router'
-// import i18n from "@/lang/i18n"
-
-// const router = useRouter()
 
 const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
 </script>
