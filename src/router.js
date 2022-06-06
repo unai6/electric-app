@@ -1,6 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 
 import DashboardPage from '@/views/DashboardPage.vue'
+import NotFoundPage from '@/views/misc/NotFoundPage.vue'
+
 const routes = [
   {
     path: '/',
@@ -12,12 +14,18 @@ const routes = [
     path: '/market',
     name: 'market',
     component: () => import('@/views/MarketPage.vue'),
-    meta: { public: true},
+    meta: { public: true },
   },
   {
     path: '/balance',
     name: 'balance',
     component: import('@/views/BalancePage.vue'),
+    meta: { public: true },
+  },
+  {
+    path: '/no-encontrada',
+    name: 'notFound',
+    component: NotFoundPage,
     meta: { public: true },
   },
 ]
