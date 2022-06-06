@@ -172,7 +172,7 @@ function getIsCurrentTime (datetime) {
       <button class="button button--secondary button--nomargin" @click="openModal">
         Ver Gráfico
       </button>
-      <div class="grid grid--2cols top-spacer-large">
+      <div class="grid grid--2cols">
         <base-field v-for="data in state.electricData.included" :key="data">
           <h5>{{ data.type }}</h5>
           <div class="buttonset buttonset--spaced">
@@ -215,10 +215,6 @@ function getIsCurrentTime (datetime) {
 
 <style lang="scss">
 .insular {
-
-  @include breakpoint(sm) {
-    margin-top: calc(#{$header-height} - #{$spacer*3});
-  }
 
   &__chart {
     height: 50vh;

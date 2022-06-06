@@ -11,13 +11,13 @@ const routes = [
   {
     path: '/market',
     name: 'market',
-    component: DashboardPage,
+    component: () => import('@/views/MarketPage.vue'),
     meta: { public: true},
   },
   {
     path: '/balance',
     name: 'balance',
-    component: DashboardPage,
+    component: import('@/views/BalancePage.vue'),
     meta: { public: true },
   },
 ]
