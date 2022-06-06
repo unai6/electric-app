@@ -22,10 +22,12 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
 
     <!-- Main menu items -->
     <div class="header__menu">
-      <router-link class="header__menuitem" :to="{ name: 'market' }">
-        Precio Mercado
+      <router-link class="header__menuitem" :to="{ name: 'dashboard' }">
+        dashboard
       </router-link>
-
+      <router-link class="header__menuitem" :to="{ name: 'market' }">
+        Precio Mercado Energia
+      </router-link>
       <router-link class="header__menuitem" :to="{ name: 'balance' }">
         Balance energético
       </router-link>
@@ -149,7 +151,7 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
     display: flex;
     background-color: $dark-gray-color;
     justify-content: space-between;
-    align-items: flex-end;
+    align-items: center;
     left: 0;
 
     @include breakpoint(sm) {
@@ -160,18 +162,6 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
       position: relative;
       max-width: $max-content-width;
       background-color: shade($broken-white-color, darker-1);
-    }
-  }
-
-  &__icon {
-    width: 22px;
-    height: 22px;
-    display: block;
-    position: absolute;
-    top: -16px;
-
-    @include breakpoint(sm) {
-      display: none;
     }
   }
 
@@ -186,7 +176,7 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
     font-size: ms(-1);
     height: 1.25rem;
     align-items: center;
-    padding: $spacer*0.12 $spacer-quarter;
+    padding: $spacer;
     color: $white-color;
     text-decoration: none;
     position: relative;

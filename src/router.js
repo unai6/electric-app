@@ -17,7 +17,7 @@ const routes = [
   {
     path: '/balance',
     name: 'balance',
-    component: DashboardPage,
+    component: import('@/views/BalancePage.vue'),
     meta: { public: true },
   },
 ]
