@@ -9,7 +9,7 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
     <div class="header__top">
       <div class="header__brand">
         <img src="/images/logo_eslectric192x192.png" alt="Logo Eslectric">
-        <span class="label"><b>Eslectric</b></span>
+        <span class="label"><b>Eslectric &nbsp; </b> {{ $d(new Date, 'longDayMonthHour') }}</span>
       </div>
       <div class="header__side-container">
         <div class="header__logout-container">
@@ -54,7 +54,7 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
     margin-right: $spacer*0.12;
     margin-top: auto;
     margin-bottom: auto;
-    width: $header-height-top*1.6*0.65; // 1.6 is the ratio between width and height for this logo.
+    width: 90%;
     display: flex;
     align-items: center;
     grid-column-gap: $spacer*0.5;
@@ -65,15 +65,10 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
     }
 
     @include breakpoint(sm) {
-      width: $header-height-top*1.6*0.7;  // 1.6 is the ratio between width and height for this logo.
       height: auto;
       margin-bottom: 0;
     }
 
-    @include breakpoint(md) {
-      margin-right: $spacer;
-      width: $header-height-top*1.6*0.75;  // 1.6 is the ratio between width and height for this logo.
-    }
   }
 
   &__side-container {
