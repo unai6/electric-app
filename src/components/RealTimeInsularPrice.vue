@@ -168,7 +168,7 @@ function getIsCurrentTime (datetime) {
 <template>
   <base-loader v-if="state.isLoading" />
   <div v-else class="insular">
-    <data-card :title="`${state.electricData.data.attributes.title} - ( ${$d(new Date, 'longDayMonthHour').toUpperCase()} )`">
+    <data-card :title="state.electricData.data.attributes.title">
       <button class="button button--secondary button--nomargin" @click="openModal">
         Ver Gráfico
       </button>
