@@ -100,7 +100,7 @@ function processData (data) {
 
   const hours = Array(24).fill().map((_, index) => `${index + 1}:00`)
   
-  const group = (param) => {
+  const getCollectionValues = (param) => {
     const groups = param.attributes.values.reduce((acc, c) => {
       const date = c.datetime.split('T')[0]
       if (!acc[date]) {
@@ -111,24 +111,28 @@ function processData (data) {
     }, {})
 
     for (const [key, value] of Object.entries(groups)) {
-      groups[key] = Math.max(...value)
+      // If max value wnated
+      // groups[key] = Math.max(...value)
+
+      // If average wanted
+      groups[key] = value.reduce((acc, c) => acc + c) / value.length
   }
   return groups
 }
 
   return {
-    labels: date.timeTrunc === 'daily' ? hours : Object.keys(group(pvpc)),
+    labels: date.timeTrunc === 'daily' ? hours : Object.keys(getCollectionValues(pvpc)),
     datasets: [
       {
         label: spot.attributes.title,
-        data: date.timeTrunc === 'daily' ? spot.attributes.values.map(attribute => attribute.value) : Object.values(group(spot)),
+        data: date.timeTrunc === 'daily' ? spot.attributes.values.map(attribute => attribute.value) : Object.values(getCollectionValues(spot)),
         backgroundColor: spot.attributes.color,
         borderColor: spot.attributes.color,
         fill: false,
       },
       {
         label: pvpc.attributes.title,
-        data: date.timeTrunc === 'daily' ? pvpc.attributes.values.map(attribute => attribute.value) : Object.values(group(pvpc)),
+        data: date.timeTrunc === 'daily' ? pvpc.attributes.values.map(attribute => attribute.value) : Object.values(getCollectionValues(pvpc)),
         backgroundColor: pvpc.attributes.color,
         borderColor: pvpc.attributes.color,
         fill: false,
@@ -210,17 +214,20 @@ const computedChartDate = computed(() => date.start && date.end ? `${d(date.star
       v-model="state.isChartVisible"
       with-close-tag
       :with-actions="false"
-      :title="`${state.electricData.data.attributes.title} ( ${computedChartDate} )`"
     >
+      <template #header>
+        <h2>{{ state.electricData.data.attributes.title }}</h2>
+        <label class="label">{{ computedChartDate }}</label>
+      </template>
       <template #body>
-        <div class="buttonset">
-          <button class="button button--outline-secondary bottom-spacer" @click="fetchRealTimeElectricData('daily')">
+        <div class="buttonset top-spacer-large bottom-spacer-large">
+          <button class="button button--nomargin button--outline-secondary" @click="fetchRealTimeElectricData('daily')">
             Diario
           </button>
-          <button class="button button--outline-secondary bottom-spacer" @click="fetchRealTimeElectricData('weekly')">
+          <button class="button button--outline-secondary" @click="fetchRealTimeElectricData('weekly')">
             Semanal
           </button>
-          <button class="button button--outline-secondary bottom-spacer" @click="fetchRealTimeElectricData('monthly')">
+          <button class="button button--nomargin button--outline-secondary" @click="fetchRealTimeElectricData('monthly')">
             Mensual
           </button>
         </div>

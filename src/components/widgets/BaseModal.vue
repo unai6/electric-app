@@ -26,10 +26,6 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  title: {
-    type: String,
-    default: '',
-  },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -51,9 +47,7 @@ function closeModal () {
     <slot name="closeTag">
       <button class="modal__close" @click="closeModal" />
     </slot>
-    <slot name="header"> 
-      <h1>{{ title }}</h1>
-    </slot>
+    <slot name="header" />
     <slot name="body" />
     <slot v-if="props.withActions" name="actions">
       <button class="button button--secondary" @click="closeModal">
@@ -68,7 +62,7 @@ function closeModal () {
 
 <style lang="scss">
 .modal {
-  background: $black-color;
+  background: $transp-black-color;
   position: relative;
   border: none;
   border-radius: $medium-radius;
@@ -76,10 +70,15 @@ function closeModal () {
 
   @include breakpoint(sm) {
     width: 60vw;
+    background: $black-color;
   }
 
   &::backdrop {
-    background: rgba(0,0,0, .4);
+    background: $black-color;
+
+    @include breakpoint (md) {
+      background: rgba(0,0,0, .4);
+    }
   }
 
   &__close {
