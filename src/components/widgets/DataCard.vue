@@ -26,7 +26,7 @@ const props = defineProps({
 .data-card {
   display: flex;
   flex-direction: column;
-  background: $very-light-gray-color;
+  background: shade($black-color, lighter-2);
   padding: $spacer;
   border-radius: $small-radius;
 }

@@ -149,7 +149,8 @@ button {
   &--outline-secondary {
     border: 1px solid shade($secondary-color, lighter-3);
     color: shade($secondary-color, darker-2);
-    background-color: shade($secondary-color, lighter-4);
+    background-color: $white-color;
+    font-weight: $font-weight-bold;
 
     &:hover:enabled {
       color: $white-color;

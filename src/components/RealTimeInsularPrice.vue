@@ -24,14 +24,13 @@ const toast = useToast()
 
 const state = reactive({
   isLoading: true,
+  isLoadingChart: false,
   electricData: {},
   chartData: null,
-  charTitle: '',
   chartOptions: {
     pointBackgroundColor: 'transparent',
     responsive: true,
-    borderColor: 'lightGray',
-    borderWidth: 2,
+    borderWidth: 3,
   },
   isChartVisible: false,
 })
@@ -40,52 +39,43 @@ const xsBreakpoint = 649 // This var will be used only in this component for the
 const isMobile = computed(() => window.innerWidth <= xsBreakpoint)
 
 onMounted(async () => {
-  await fetchRealTimeElectricData()
+  await fetchRealTimeElectricData('daily')
 })
-
-
-// TODO: If this function is used anywhere else, place it into a config file.
-function hexToRGBA(hex, opacity) {
-  let r = 0, g = 0, b = 0
-
-  // 3 digits
-  if (hex.length == 4) {
-    r = "0x" + hex[1] + hex[1]
-    g = "0x" + hex[2] + hex[2]
-    b = "0x" + hex[3] + hex[3]
-
-  // 6 digits
-  } else if (hex.length == 7) {
-    r = "0x" + hex[1] + hex[2]
-    g = "0x" + hex[3] + hex[4]
-    b = "0x" + hex[5] + hex[6]
-  }
-  return `rgba(${+r},${+g},${+b},${opacity})`
-}
-
-function getGradient (context) {
-  if (context) {
-    const chart = context.chart
-    const { ctx } = chart
-    const gradient = ctx.createLinearGradient(0, 0, 0, 1000)
-    gradient.addColorStop(0, hexToRGBA(context.dataset.color, context.dataset.opacity[0]))
-    gradient.addColorStop(0.6, hexToRGBA(context.dataset.color, context.dataset.opacity[1]))
-    gradient.addColorStop(1, hexToRGBA(context.dataset.color, context.dataset.opacity[2]))
-
-    return gradient
-  }
-}
 
 onBeforeUnmount(() => clearInterval(interval))
 
 const interval = setInterval(fetchRealTimeElectricData, 1000 * 1000)
 
-async function fetchRealTimeElectricData () {
-  const today = dayjs().startOf('day').format('YYYY-MM-DDTHH:MM')
-  const todayEndDay = dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
+async function fetchRealTimeElectricData (timeRange) {
+  let startDate, endDate
+
+  switch (timeRange) {
+    case 'daily': {
+      startDate = dayjs().startOf('day').format('YYYY-MM-DDTHH:MM')
+      endDate =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
+    }
+    break;
+    case 'weekly': {
+      startDate = dayjs().startOf('week').format('YYYY-MM-DDTHH:MM')
+      endDate =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
+    }
+    break;
+    case 'monthly': {
+      startDate = dayjs().startOf('month').format('YYYY-MM-DDTHH:MM')
+      endDate =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
+    }
+    break;
+    default: {
+      // This will apply to daily stats
+      startDate = dayjs().startOf('day').format('YYYY-MM-DDTHH:MM')
+      endDate =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
+    }
+  }
 
   try {
-    const { data } = await axios.get(`https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=${today}&end_date=${todayEndDay}&time_trunc=hour`)
+    state.isLoadingChart = true
+
+    const { data } = await axios.get(`https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=${startDate}&end_date=${endDate}&time_trunc=hour`)
     state.electricData = data
     state.chartData = processData(state.electricData.included)
   } catch (err) {
@@ -94,7 +84,7 @@ async function fetchRealTimeElectricData () {
       toast.error('Ha habido un error al procesar los datos. Por favor vuelve a intentarlo.')
     }
   } finally {
-    state.isLoading = false
+    state.isLoadingChart = false
   }
 }
 
@@ -107,22 +97,16 @@ function processData (data) {
       {
         label: spot.attributes.title,
         data: spot.attributes.values.map(attribute => attribute.value),
-        backgroundColor: getGradient,
-        color: spot.attributes.color,
-        borderColor: 'transparent',
-        fill: true,
-        opacity: [0.9, 0.75, 0],
-        tension: 0.3,
+        backgroundColor: spot.attributes.color,
+        borderColor: spot.attributes.color,
+        fill: false,
       },
       {
         label: pvpc.attributes.title,
         data: pvpc.attributes.values.map(attribute => attribute.value),
-        backgroundColor: getGradient,
-        color: pvpc.attributes.color,
-        borderColor: 'transparent',
-        fill: true,
-        opacity: [0.9, 0.5, 0],
-        tension: 0.3,
+        backgroundColor: pvpc.attributes.color,
+        borderColor: pvpc.attributes.color,
+        fill: false,
       },
     ],
   }
@@ -157,6 +141,7 @@ function getRefferencePricesByCollection (attributes) {
     min: n(attributes.map(at => at.value).reduce((acc, c) => acc < c ? acc : c), 'currency'),
   }
 }
+
 function getIsCurrentTime (datetime) {
   const parsedDateTime = dayjs(datetime).format('H')
   const now = dayjs().format('H')
@@ -169,8 +154,8 @@ function getIsCurrentTime (datetime) {
   <base-loader v-if="state.isLoading" />
   <div v-else class="insular">
     <data-card :title="state.electricData.data.attributes.title">
-      <button class="button button--secondary button--nomargin" @click="openModal">
-        Ver Gráfico
+      <button class="button button--outline-secondary button--nomargin" @click="openModal">
+        Ver gráfico
       </button>
       <div class="grid grid--2cols">
         <base-field v-for="data in state.electricData.included" :key="data">
@@ -201,7 +186,19 @@ function getIsCurrentTime (datetime) {
       :title="state.electricData.data.attributes.title"
     >
       <template #body>
+        <div class="buttonset">
+          <button class="button button--outline-secondary bottom-spacer" @click="fetchRealTimeElectricData('daily')">
+            Diario
+          </button>
+          <button class="button button--outline-secondary bottom-spacer" @click="fetchRealTimeElectricData('weekly')">
+            Semanal
+          </button>
+          <button class="button button--outline-secondary bottom-spacer" @click="fetchRealTimeElectricData('monthly')">
+            Mensual
+          </button>
+        </div>
         <line-chart
+          v-if="!state.isLoading"
           css-classes="insular__chart"
           :chart-data="state.chartData"
           :chart-options="state.chartOptions"

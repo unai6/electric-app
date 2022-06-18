@@ -23,7 +23,7 @@
     height: 64px;
     width: 64px;
     border-radius: 50%;
-    border: 4px solid $secondary-color;
+    border: 4px solid $white-color;
     border-top: 4px solid transparent;
     animation: spinner 4s linear infinite;
   }

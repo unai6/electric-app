@@ -16,6 +16,10 @@ const routes = [
     component: NotFoundPage,
     meta: { public: true },
   },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: { name: 'notFound' },
+  },
 ]
 
 const router = createRouter({

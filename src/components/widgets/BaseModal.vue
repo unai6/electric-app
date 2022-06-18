@@ -68,6 +68,7 @@ function closeModal () {
 
 <style lang="scss">
 .modal {
+  background: $black-color;
   position: relative;
   border: none;
   border-radius: $medium-radius;
@@ -78,22 +79,22 @@ function closeModal () {
   }
 
   &::backdrop {
-    background: rgba(0,0,0, .8);
+    background: rgba(0,0,0, .4);
   }
 
   &__close {
     position: absolute;
     right: $spacer;
     background: none;
-    color: $black-color;
+    color: $white-color;
     font-size: ms(1);
     border: none;
     cursor: pointer;
 
     &::after {
       position: absolute;
-      content: 'X';
-      right: $spacer;
+      content: url('https://api.iconify.design/ci/off-outline-close.svg?color=white&width=30&height=30');
+      right: 0;
       top: 0;
     }
   }

@@ -17,10 +17,9 @@ import AppHeader from '@/components/AppHeader.vue'
     position: relative;
     padding: $spacer;
     margin-top: $header-height-top + $spacer;
-    margin-bottom: $bottom-menu-height + $spacer;
     min-height: calc(100vh - #{$bottom-menu-height});
-    max-width: $max-content-width;
     box-sizing: border-box;
+    background: $transp-black-color;
 
     &--compact {
       margin-top: $header-height-compact !important;
