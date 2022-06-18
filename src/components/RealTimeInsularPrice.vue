@@ -165,9 +165,15 @@ function getClassModifier (value, id) {
 
 function getRefferencePricesByCollection (attributes) {
   return {
-    max: n(Math.max(...attributes.map(att => att.value)), 'currency'),
-    average: n(attributes.map(at => at.value).reduce((acc, c) => acc + c) / attributes.length, 'currency'),
-    min: n(attributes.map(at => at.value).reduce((acc, c) => acc < c ? acc : c), 'currency'),
+    max: {
+      value: n(Math.max(...attributes.map(att => att.value)), 'currency'),
+    },
+    average: {
+      value: n(attributes.map(at => at.value).reduce((acc, c) => acc + c) / attributes.length, 'currency'),
+    },
+    min: {
+      value: n(attributes.reduce((acc, c) => acc.value < c.value ? acc.value : c.value), 'currency'),
+    },
   }
 }
 
@@ -191,16 +197,16 @@ const computedChartDate = computed(() => date.start && date.end ? `${d(date.star
       <div class="grid grid--2cols">
         <base-field v-for="data in state.electricData.included" :key="data">
           <h5>{{ data.type }}</h5>
-          <div class="buttonset buttonset--spaced">
-            <button class="button button--is-danger insular__stat">
-              Máximo <br>{{ getRefferencePricesByCollection(data.attributes.values).max }}
-            </button>
-            <button class="button button--is-warning insular__stat">
-              Medio <br>{{ getRefferencePricesByCollection(data.attributes.values).average }}
-            </button>
-            <button class="button button--success insular__stat">
-              Mínimo <br>{{ getRefferencePricesByCollection(data.attributes.values).min }}
-            </button>
+          <div class="insular__stats">
+            <p class="insular__stat insular__stat--danger">
+              Máximo <br>{{ getRefferencePricesByCollection(data.attributes.values).max.value }}
+            </p>
+            <p class="insular__stat insular__stat--warning">
+              Medio <br>{{ getRefferencePricesByCollection(data.attributes.values).average.value }}
+            </p>
+            <p class="insular__stat insular__stat--success">
+              Mínimo <br>{{ getRefferencePricesByCollection(data.attributes.values).min.value }}
+            </p>
           </div>
           <div v-for="attribute in data.attributes.values" :key="attribute.id">
             <p class="insular__price text-align-centered" :class="getClassModifier(attribute.value, data.id)">
@@ -249,8 +255,35 @@ const computedChartDate = computed(() => date.start && date.end ? `${d(date.star
 <style lang="scss">
 .insular {
 
+  &__stats {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    column-gap: $spacer*3;
+    background: $white-color;
+    padding: $spacer-half;
+    border-radius: $small-radius;
+    text-transform: uppercase;
+  }
+
   &__stat {
+    margin: 0;
     font-weight: $font-weight-bold;
+    font-size: ms(0);
+
+    &--danger {
+      color: $danger-color;
+    }
+
+    &--warning {
+      color: $warning-color;
+
+    }
+
+    &--success {
+      color: $success-color;
+
+    }
   }
 
   &__price {
