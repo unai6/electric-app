@@ -37,6 +37,9 @@ const commonDatetimeFormats = {
   weekday: {
     year: 'numeric', month: 'long', day: 'numeric', weekday: 'long',
   },
+  shortYearMonthOnly: {
+    year: 'numeric', month: 'short',
+  },
   shortMonthOnly: {
     month: 'short',
   },

@@ -18,7 +18,7 @@ import dayjs from 'dayjs'
 
 Chart.register(...registerables)
 
-const { n }  = i18n.global || i18n
+const { n, d }  = i18n.global || i18n
 
 const toast = useToast()
 
@@ -35,47 +35,53 @@ const state = reactive({
   isChartVisible: false,
 })
 
+const date = reactive({
+  start: '',
+  end: '',
+  timeTrunc: 'daily',
+})
+
 const xsBreakpoint = 649 // This var will be used only in this component for the moment. Move to a config file if necessary in the future.
 const isMobile = computed(() => window.innerWidth <= xsBreakpoint)
 
 onMounted(async () => {
-  await fetchRealTimeElectricData('daily')
+  await fetchRealTimeElectricData('daily', 'hour')
 })
 
 onBeforeUnmount(() => clearInterval(interval))
 
 const interval = setInterval(fetchRealTimeElectricData, 1000 * 1000)
 
-async function fetchRealTimeElectricData (timeRange) {
-  let startDate, endDate
+async function fetchRealTimeElectricData (timeTrunc) {
+  date.timeTrunc = timeTrunc
 
-  switch (timeRange) {
+  switch (timeTrunc) {
     case 'daily': {
-      startDate = dayjs().startOf('day').format('YYYY-MM-DDTHH:MM')
-      endDate =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
+      date.start = dayjs().startOf('day').format('YYYY-MM-DDTHH:MM')
+      date.end =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
     }
     break;
     case 'weekly': {
-      startDate = dayjs().startOf('week').format('YYYY-MM-DDTHH:MM')
-      endDate =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
+      date.start = dayjs().startOf('week').format('YYYY-MM-DDTHH:MM')
+      date.end =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
     }
     break;
     case 'monthly': {
-      startDate = dayjs().startOf('month').format('YYYY-MM-DDTHH:MM')
-      endDate =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
+      date.start = dayjs().startOf('month').format('YYYY-MM-DDTHH:MM')
+      date.end =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
     }
     break;
     default: {
       // This will apply to daily stats
-      startDate = dayjs().startOf('day').format('YYYY-MM-DDTHH:MM')
-      endDate =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
+      date.start = dayjs().startOf('day').format('YYYY-MM-DDTHH:MM')
+      date.end =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
     }
   }
 
   try {
     state.isLoadingChart = true
 
-    const { data } = await axios.get(`https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=${startDate}&end_date=${endDate}&time_trunc=hour`)
+    const { data } = await axios.get(`https://apidatos.ree.es/es/datos/mercados/precios-mercados-tiempo-real?start_date=${date.start}&end_date=${date.end}&time_trunc=hour`)
     state.electricData = data
     state.chartData = processData(state.electricData.included)
   } catch (err) {
@@ -84,26 +90,45 @@ async function fetchRealTimeElectricData (timeRange) {
       toast.error('Ha habido un error al procesar los datos. Por favor vuelve a intentarlo.')
     }
   } finally {
+    state.isLoading = false
     state.isLoadingChart = false
   }
 }
 
 function processData (data) {
   const [pvpc, spot] = data
+
   const hours = Array(24).fill().map((_, index) => `${index + 1}:00`)
+  
+  const group = (param) => {
+    const groups = param.attributes.values.reduce((acc, c) => {
+      const date = c.datetime.split('T')[0]
+      if (!acc[date]) {
+        acc[date] = []
+      }
+      acc[date].push(c.value)
+      return acc
+    }, {})
+
+    for (const [key, value] of Object.entries(groups)) {
+      groups[key] = Math.max(...value)
+  }
+  return groups
+}
+
   return {
-    labels: hours,
+    labels: date.timeTrunc === 'daily' ? hours : Object.keys(group(pvpc)),
     datasets: [
       {
         label: spot.attributes.title,
-        data: spot.attributes.values.map(attribute => attribute.value),
+        data: date.timeTrunc === 'daily' ? spot.attributes.values.map(attribute => attribute.value) : Object.values(group(spot)),
         backgroundColor: spot.attributes.color,
         borderColor: spot.attributes.color,
         fill: false,
       },
       {
         label: pvpc.attributes.title,
-        data: pvpc.attributes.values.map(attribute => attribute.value),
+        data: date.timeTrunc === 'daily' ? pvpc.attributes.values.map(attribute => attribute.value) : Object.values(group(pvpc)),
         backgroundColor: pvpc.attributes.color,
         borderColor: pvpc.attributes.color,
         fill: false,
@@ -127,7 +152,7 @@ function getClassModifier (value, id) {
     if (data.id === id) {
       return data.max - (data.max * 0.10) < value 
         ? 'insular__price--expensive' 
-        : value < data.max && value >= data.average 
+        : (value < data.max) && (value >= data.average) 
           ? 'insular__price--regular' 
           : 'insular__price--cheap'
     }
@@ -147,6 +172,8 @@ function getIsCurrentTime (datetime) {
   const now = dayjs().format('H')
   return parsedDateTime === now ? String.fromCodePoint(0x1F551) : null
 }
+
+const computedChartDate = computed(() => date.start && date.end ? `${d(date.start, 'daymonth')} - ${d(date.end, 'daymonth')}` : null)
 
 </script>
 
@@ -183,7 +210,7 @@ function getIsCurrentTime (datetime) {
       v-model="state.isChartVisible"
       with-close-tag
       :with-actions="false"
-      :title="state.electricData.data.attributes.title"
+      :title="`${state.electricData.data.attributes.title} ( ${computedChartDate} )`"
     >
       <template #body>
         <div class="buttonset">
@@ -197,13 +224,15 @@ function getIsCurrentTime (datetime) {
             Mensual
           </button>
         </div>
-        <line-chart
-          v-if="!state.isLoading"
-          css-classes="insular__chart"
-          :chart-data="state.chartData"
-          :chart-options="state.chartOptions"
-          :height="isMobile ? 400 : 150"
-        /> 
+        <div class="insular-chart">
+          <base-loader v-if="state.isLoadingChart" />
+          <line-chart
+            css-classes="insular-chart__chart"
+            :chart-data="state.chartData"
+            :chart-options="state.chartOptions"
+            :height="isMobile ? 400 : 150"
+          /> 
+        </div>
       </template>
     </base-modal>
   </div>
@@ -212,10 +241,6 @@ function getIsCurrentTime (datetime) {
 
 <style lang="scss">
 .insular {
-
-  &__chart {
-    height: 50vh;
-  }
 
   &__stat {
     font-weight: $font-weight-bold;
@@ -240,6 +265,13 @@ function getIsCurrentTime (datetime) {
     &--expensive {
       background: $danger-color;
     }
+  }
+}
+
+.insular-chart {
+  
+  &__chart {
+    height: 50vh;
   }
 }
 </style>
