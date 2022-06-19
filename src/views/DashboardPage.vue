@@ -125,7 +125,7 @@ async function fetchBalanceData (timeTrunc) {
               css-classes="insular-chart__chart"
               :chart-data="getChart(attribute)"
               :chart-options="state.chartOptions"
-              :height="250"
+              :height="350"
             /> 
           </div>
         </data-card>
