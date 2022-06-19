@@ -7,11 +7,10 @@ import BaseModal from '@/components/widgets/BaseModal.vue'
 import DataCard from '@/components/widgets/DataCard.vue'
 
 import i18n from '@/lang/i18n'
+import { useToast } from 'vue-toastification'
 
 import { Line as LineChart } from 'vue-chartjs'
 import { Chart, registerables } from 'chart.js'
-
-import { useToast } from 'vue-toastification'
 
 import axios from 'axios'
 import dayjs from 'dayjs'
