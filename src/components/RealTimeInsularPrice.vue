@@ -174,7 +174,7 @@ function getRefferencePricesByCollection (attributes) {
   return {
     max: { value: n(Math.max(...attributes.map(att => att.value)), 'currency') },
     average: { value: n(attributes.map(at => at.value).reduce((acc, c) => acc + c) / attributes.length, 'currency') },
-    min: { value: n(attributes.reduce((acc, c) => acc.value < c.value ? acc.value : c.value), 'currency') },
+    min: { value: n(Math.min(...attributes.map(att => att.value)), 'currency') },
   }
 }
 
