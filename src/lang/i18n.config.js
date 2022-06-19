@@ -25,6 +25,9 @@ const commonDatetimeFormats = {
   short: {
     year: 'numeric', month: 'short', day: 'numeric',
   },
+  shortNumeric: {
+    year: 'numeric', month: 'numeric', day: 'numeric',
+  },
   long: {
     year: 'numeric', month: 'numeric', day: 'numeric', hour: 'numeric', minute: 'numeric', hour12: false,
   },
