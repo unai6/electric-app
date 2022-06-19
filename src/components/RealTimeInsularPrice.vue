@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted, onBeforeUnmount, computed } from 'vue'
+import { reactive, onMounted, onBeforeUnmount, computed, watch } from 'vue'
 
 import BaseLoader from '@/components/widgets/BaseLoader.vue'
 import BaseField from '@/components/widgets/BaseField.vue'
@@ -44,8 +44,14 @@ const date = reactive({
 const xsBreakpoint = 649 // This var will be used only in this component for the moment. Move to a config file if necessary in the future.
 const isMobile = computed(() => window.innerWidth <= xsBreakpoint)
 
+watch(() => state.isChartVisible, (value) => {
+  if (!value) {
+    fetchRealTimeElectricData('daily')
+  }
+})
+
 onMounted(async () => {
-  await fetchRealTimeElectricData('daily', 'hour')
+  await fetchRealTimeElectricData('daily')
 })
 
 onBeforeUnmount(() => clearInterval(interval))
@@ -225,13 +231,13 @@ const computedChartDate = computed(() => date.start && date.end && date.timeTrun
       </template>
       <template #body>
         <div class="buttonset top-spacer-large bottom-spacer-large">
-          <button class="button button--nomargin button--outline-secondary" @click="fetchRealTimeElectricData('daily')">
+          <button class="button button--nomargin" :class="{ 'button--active': date.timeTrunc === 'daily' }" @click="fetchRealTimeElectricData('daily')">
             Diario
           </button>
-          <button class="button button--outline-secondary" @click="fetchRealTimeElectricData('weekly')">
+          <button class="button" :class="{ 'button--active': date.timeTrunc === 'weekly' }" @click="fetchRealTimeElectricData('weekly')">
             Semanal
           </button>
-          <button class="button button--nomargin button--outline-secondary" @click="fetchRealTimeElectricData('monthly')">
+          <button class="button button--nomargin" :class="{ 'button--active': date.timeTrunc === 'monthly' }" @click="fetchRealTimeElectricData('monthly')">
             Mensual
           </button>
         </div>
@@ -302,6 +308,14 @@ const computedChartDate = computed(() => date.start && date.end && date.timeTrun
 
     &--expensive {
       background: $danger-color;
+    }
+  }
+  
+  &__chart-button {
+    display: block;
+
+    &--selected {
+     background: $black-color;
     }
   }
 }

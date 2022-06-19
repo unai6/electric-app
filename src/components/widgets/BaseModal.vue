@@ -77,7 +77,7 @@ function closeModal () {
     background: $black-color;
 
     @include breakpoint (md) {
-      background: rgba(0,0,0, .4);
+      background: rgba(0,0,0, 1);
     }
   }
 
