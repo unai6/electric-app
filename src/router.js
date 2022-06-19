@@ -11,6 +11,12 @@ const routes = [
     meta: { public: true },
   },
   {
+    path: '/',
+    name: 'market',
+    component: DashboardPage,
+    meta: { public: true },
+  },
+  {
     path: '/no-encontrada',
     name: 'notFound',
     component: NotFoundPage,
