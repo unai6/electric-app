@@ -10,6 +10,14 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
       <div class="header__brand">
         <img src="/images/logo_eslectric192x192.png" alt="Logo Eslectric">
         <span class="label"><b>Eslectric &nbsp; </b> {{ $d(new Date, 'longDayMonthHour') }}</span>
+        <div>
+          <router-link :to="{ name: 'balance' }">
+            Balance
+          </router-link>
+          <router-link :to="{ name: 'market' }">
+            Mercados
+          </router-link>
+        </div>
       </div>
       <div class="header__side-container">
         <div class="header__logout-container">
@@ -25,7 +33,7 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
 <style lang="scss">
 .header {
   position: fixed;
-  top: 0;
+  bottom: 0;
   width: 100%;
   height: $header-height;
   display: flex;
@@ -33,6 +41,10 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
   align-items: center;
   z-index: 999;
   background-color: shade($broken-white-color, darker-1);
+
+  @include breakpoint (sm) {
+    top: 0;
+  }
 
   &__top {
     box-sizing: border-box;
@@ -59,9 +71,21 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
     align-items: center;
     grid-column-gap: $spacer*0.5;
 
+    span {
+      display: none;
+
+      @include breakpoint(sm) {
+        display: block;
+      }
+    }
+
     img {
-      display: block;
-      height: 3rem;
+      display: none;
+
+      @include breakpoint(sm) {
+        display: block;
+        height: 3rem;
+      }
     }
 
     @include breakpoint(sm) {

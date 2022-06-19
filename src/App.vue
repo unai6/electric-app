@@ -1,14 +1,11 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
-import SideNavBar from '@/components/SideNavBar.vue'
-
 </script>
 
 <template>
   <div id="app">
     <app-header />
-    <side-nav-bar />
     <router-view class="app__content" />
   </div>
 </template>
@@ -18,12 +15,15 @@ import SideNavBar from '@/components/SideNavBar.vue'
   &__content {
     position: relative;
     padding: $spacer;
-    margin-top: $header-height-top + $spacer;
-    margin-left: $side-navbar-width;
+    margin-top: 0;
     min-height: calc(100vh - #{$bottom-menu-height});
     box-sizing: border-box;
     background: $transp-black-color;
 
+    @include breakpoint(sm) {
+      margin-top: $header-height-top + $spacer;
+    }
+    
     &--compact {
       margin-top: $header-height-compact !important;
 

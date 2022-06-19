@@ -6,7 +6,7 @@ import NotFoundPage from '@/views/misc/NotFoundPage.vue'
 const routes = [
   {
     path: '/',
-    name: 'dashboard',
+    name: 'balance',
     component: DashboardPage,
     meta: { public: true },
   },
