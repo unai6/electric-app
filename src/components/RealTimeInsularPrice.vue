@@ -189,10 +189,22 @@ const computedChartDate = computed(() => date.start && date.end && date.timeTrun
 <template>
   <base-loader v-if="state.isLoading" />
   <div v-else class="insular">
-    <data-card :title="state.electricData.data.attributes.title">
+    <data-card :title="state.electricData.data.attributes.title" :is-loading="state.isLoadingChart">
       <button class="button button--outline-secondary button--nomargin" @click="openModal">
         Ver gráfico
       </button>
+      <div class="buttonset top-spacer">
+        <button class="button button--nomargin" :class="{ 'button--active': date.timeTrunc === 'daily' }" @click="fetchRealTimeElectricData('daily')">
+          Diario
+        </button>
+        <button class="button" :class="{ 'button--active': date.timeTrunc === 'weekly' }" @click="fetchRealTimeElectricData('weekly')">
+          Semanal
+        </button>
+        <button class="button button--nomargin" :class="{ 'button--active': date.timeTrunc === 'monthly' }" @click="fetchRealTimeElectricData('monthly')">
+          Mensual
+        </button>
+      </div>
+
       <div class="grid grid--2cols">
         <base-field v-for="data in state.electricData.included" :key="data">
           <h5>{{ data.type }}</h5>

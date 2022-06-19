@@ -56,7 +56,7 @@
 
 // Utility styles
 .loading {
-  border: 6px solid $primary-color;
+  border: 6px solid $white-color;
   border-top: 6px solid transparent;
   border-radius: 50%;
   width: 32px;
@@ -65,7 +65,7 @@
   // margin: auto;
 
   &--button {
-    border: 3px solid $primary-color;
+    border: 3px solid $white-color;
     border-top: 3px solid transparent;
     width: 12px;
     height: 12px;
@@ -73,7 +73,7 @@
   }
 
   &--big {
-    border: 10px solid $primary-color;
+    border: 10px solid $white-color;
     border-top: 10px solid transparent;
     width: 80px;
     height: 80px;
