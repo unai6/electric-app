@@ -62,7 +62,7 @@ async function fetchRealTimeElectricData (timeTrunc) {
     }
     break;
     case 'weekly': {
-      date.start = dayjs().startOf('week').format('YYYY-MM-DDTHH:MM')
+      date.start = dayjs().subtract(6, 'day').format('YYYY-MM-DDTHH:MM')
       date.end =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
     }
     break;
@@ -116,12 +116,13 @@ function processData (data) {
 
       // If average wanted
       groups[key] = value.reduce((acc, c) => acc + c) / value.length
+    }
+    return groups
   }
-  return groups
-}
 
+  const days = Object.keys(getCollectionValues(pvpc)).map(date => dayjs(date).format('D MMM'))
   return {
-    labels: date.timeTrunc === 'daily' ? hours : Object.keys(getCollectionValues(pvpc)),
+    labels: date.timeTrunc === 'daily' ? hours : days,
     datasets: [
       {
         label: spot.attributes.title,
@@ -183,7 +184,10 @@ function getIsCurrentTime (datetime) {
   return parsedDateTime === now ? String.fromCodePoint(0x1F551) : null
 }
 
-const computedChartDate = computed(() => date.start && date.end ? `${d(date.start, 'daymonth')} - ${d(date.end, 'daymonth')}` : null)
+const computedChartDate = computed(() => date.start && date.end && date.timeTrunc === 'daily' 
+  ? `${d(date.start, 'daymonth')} - ${d(date.end, 'daymonth')}`
+  : `Precio medio ${d(date.start, 'daymonth')} - ${d(date.end, 'daymonth')}`,
+)
 
 </script>
 
