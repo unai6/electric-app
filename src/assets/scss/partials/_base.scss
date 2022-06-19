@@ -93,12 +93,12 @@ p, .p {
   }
 
   a {
-    color: $primary-color;
+    color: $secondary-color;
     font-weight: $font-weight-regular;
     cursor: pointer;
 
     &:visited {
-      color: $primary-color;
+      color: $secondary-color;
     }
 
     &:hover {
@@ -109,7 +109,7 @@ p, .p {
 
 // Links
 a {
-  color: $primary-color;
+  color: $secondary-color;
   font-weight: $font-weight-regular;
   text-decoration: underline;
 

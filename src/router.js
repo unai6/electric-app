@@ -11,9 +11,9 @@ const routes = [
     meta: { public: true },
   },
   {
-    path: '/',
+    path: '/market',
     name: 'market',
-    component: DashboardPage,
+    component: () => import('@/views/MarketPage.vue'),
     meta: { public: true },
   },
   {
