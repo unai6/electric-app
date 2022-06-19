@@ -1,5 +1,5 @@
 <script setup>
-import { reactive, onMounted, onBeforeUnmount, computed, watch } from 'vue'
+import { reactive, onMounted, onBeforeUnmount, computed } from 'vue'
 
 import BaseLoader from '@/components/widgets/BaseLoader.vue'
 import BaseField from '@/components/widgets/BaseField.vue'
@@ -43,12 +43,6 @@ const date = reactive({
 
 const xsBreakpoint = 649 // This var will be used only in this component for the moment. Move to a config file if necessary in the future.
 const isMobile = computed(() => window.innerWidth <= xsBreakpoint)
-
-watch(() => state.isChartVisible, (value) => {
-  if (!value) {
-    fetchRealTimeElectricData('daily')
-  }
-})
 
 onMounted(async () => {
   await fetchRealTimeElectricData('daily')
@@ -173,22 +167,23 @@ function getClassModifier (value, id) {
 function getRefferencePricesByCollection (attributes) {
   return {
     max: { value: n(Math.max(...attributes.map(att => att.value)), 'currency') },
-    average: { value: n(attributes.map(at => at.value).reduce((acc, c) => acc + c) / attributes.length, 'currency') },
+    average: { value: n(attributes.map(at => at.value).reduce((acc, c, _, { length }) => acc + (c / length), 0), 'currency') },
     min: { value: n(Math.min(...attributes.map(att => att.value)), 'currency') },
   }
 }
 
-function getIsCurrentTime (datetime) {
+const getIsCurrentTime = computed(() => datetime => {
   const parsedDateTime = dayjs(datetime).format('H')
   const now = dayjs().format('H')
   return parsedDateTime === now ? String.fromCodePoint(0x1F551) : null
-}
+})
+
+const getCurrentDayMonth = computed(() => attributeDateTime =>  date.timeTrunc !== 'daily' ? d(attributeDateTime, 'shortNumeric') : null)
 
 const computedChartDate = computed(() => date.start && date.end && date.timeTrunc === 'daily' 
   ? `${d(date.start, 'daymonth')} - ${d(date.end, 'daymonth')}`
   : `Precio medio ${d(date.start, 'daymonth')} - ${d(date.end, 'daymonth')}`,
 )
-
 </script>
 
 <template>
@@ -214,7 +209,7 @@ const computedChartDate = computed(() => date.start && date.end && date.timeTrun
           </div>
           <div v-for="attribute in data.attributes.values" :key="attribute.id">
             <p class="insular__price text-align-centered" :class="getClassModifier(attribute.value, data.id)">
-              {{ getIsCurrentTime(attribute.datetime) }} {{ $d(attribute.datetime, 'time') }} - {{ $n(attribute.value, 'currency') }}
+              {{ getIsCurrentTime(attribute.datetime) }} {{ getCurrentDayMonth(attribute.datetime) }} {{ $d(attribute.datetime, 'time') }} - {{ $n(attribute.value, 'currency') }}
             </p>
           </div>
         </base-field> 
