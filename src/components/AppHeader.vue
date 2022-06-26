@@ -10,11 +10,11 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
       <div class="header__brand">
         <img src="/images/logo_eslectric192x192.png" alt="Logo Eslectric">
         <span class="label"><b>Eslectric &nbsp; </b> {{ $d(new Date, 'longDayMonthHour') }}</span>
-        <div>
-          <router-link :to="{ name: 'balance' }">
+        <div class="header__navigation">
+          <router-link class="header__link" :to="{ name: 'balance' }">
             Balance
           </router-link>
-          <router-link :to="{ name: 'market' }">
+          <router-link class="header__link" :to="{ name: 'market' }">
             Mercados
           </router-link>
         </div>
@@ -40,9 +40,10 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
   flex-direction: column;
   align-items: center;
   z-index: 999;
-  background-color: shade($broken-white-color, darker-1);
+  background: $white-color;
 
   @include breakpoint (sm) {
+    background-color: shade($broken-white-color, darker-1);
     top: 0;
   }
 
@@ -63,6 +64,7 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
   }
 
   &__brand {
+    position: relative;
     margin-right: $spacer*0.12;
     margin-top: auto;
     margin-bottom: auto;
@@ -107,6 +109,39 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
     color: $dark-gray-color;
     text-align: right;
     line-height: 1;
+  }
+
+  &__navigation {
+    display: flex;
+    position: absolute;
+    right: -1rem;
+    width: 100%;
+    justify-content: center;
+    column-gap: $spacer*2;
+    font-size: 1.5rem;
+
+    @include breakpoint (sm) {
+      width: 50%;
+    }
+  }
+
+  &__link {
+    text-decoration: none;
+    padding: 0 $spacer;
+
+    &:focus {
+      background: $secondary-color;
+      color: $white-color;
+      padding: 0 $spacer;
+      border-radius: $big-radius;
+    }
+
+    &:hover {
+      background: shade($secondary-color, lighter-4);
+      color: $white-color;
+      padding: 0 $spacer;
+      border-radius: $big-radius;
+    }
   }
 }
 </style>
