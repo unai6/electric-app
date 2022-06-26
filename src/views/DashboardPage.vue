@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, reactive } from 'vue'
+import { onMounted, reactive, computed } from 'vue'
 
 import BaseLoader from '@/components/widgets/BaseLoader.vue'
 import DataCard from '@/components/widgets/DataCard.vue'
@@ -7,7 +7,7 @@ import DataCard from '@/components/widgets/DataCard.vue'
 // import i18n from '@/lang/i18n'
 import { useToast } from 'vue-toastification'
 
-import { Line as LineChart } from 'vue-chartjs'
+import { Bar as BarChart } from 'vue-chartjs'
 import { Chart, registerables } from 'chart.js'
 
 import axios from 'axios'
@@ -28,8 +28,8 @@ const state = reactive({
     pointBackgroundColor: 'transparent',
     responsive: true,
     borderWidth: 3,
-    layout: {
-      padding: 30,
+    legend: {
+      position: 'bottom',
     },
   },
   isLoading: true,
@@ -41,6 +41,9 @@ const date = reactive({
   end: '',
   timeTrunc: 'daily',
 })
+
+const xsBreakpoint = 649 // This var will be used only in this component for the moment. Move to a config file if necessary in the future.
+const isMobile = computed(() => window.innerWidth <= xsBreakpoint)
 
 onMounted(async () => await fetchBalanceData('day'))
 
@@ -77,38 +80,23 @@ async function fetchBalanceData (timeTrunc) {
   }
 }
 
-/**  return {
-    labels: date.timeTrunc === 'daily' ? hours : days,
-    datasets: [
-      {
-        label: spot.attributes.title,
-        data: date.timeTrunc === 'daily' ? spot.attributes.values.map(attribute => attribute.value) : Object.values(getCollectionValues(spot)),
-        backgroundColor: spot.attributes.color,
-        borderColor: spot.attributes.color,
-        fill: false,
-      },
-      {
-        label: pvpc.attributes.title,
-        data: date.timeTrunc === 'daily' ? pvpc.attributes.values.map(attribute => attribute.value) : Object.values(getCollectionValues(pvpc)),
-        backgroundColor: pvpc.attributes.color,
-        borderColor: pvpc.attributes.color,
-        fill: false,
-      },
-    ],
-  } */
 
-  function getChart (eneryTypeAttributes) {
-    console.info(eneryTypeAttributes)
+  function getCharts (energyType) {
+    const datasets = energyType.map(e => ({
+      label: e.attributes.title,
+      data: e.attributes.values.map(att => att.value),
+      borderColor: e.attributes.color,
+      backgroundColor: e.attributes.color,
+    }))
+
+    console.info({
+           labels: energyType.map(e => e.attributes.values.map(att => dayjs(att.datetime).format('D MMM')))[0],
+      datasets,
+    })
+
     return {
-      labels: eneryTypeAttributes.attributes.values.map(att => dayjs(att.datetime).format('D MMM')),
-      datasets: [
-        {
-          label: eneryTypeAttributes.attributes.title,
-          data: eneryTypeAttributes.attributes.values.map(att => att.value),
-          borderColor: eneryTypeAttributes.attributes.color,
-          backgroundColor: eneryTypeAttributes.attributes.color,
-        },
-      ],
+      labels: energyType.map(e => e.attributes.values.map(att => dayjs(att.datetime).format('D MMM')))[0],
+      datasets,
     }
   }
 </script>
@@ -116,18 +104,16 @@ async function fetchBalanceData (timeTrunc) {
 <template>
   <div class="market grid grid--12cols">
     <base-loader v-if="state.isLoading" />
-    <div v-else>
+    <div v-else class="grid-item grid-item--6col">
       <h1>{{ state.balanceData.data.attributes.title }}</h1>
-      <div class="grid grid--3cols">  
+      <div>
         <data-card :title="state.renewables.type">
-          <div v-for="attribute in state.renewables.attributes.content" :key="attribute.type">
-            <line-chart
-              css-classes="insular-chart__chart"
-              :chart-data="getChart(attribute)"
-              :chart-options="state.chartOptions"
-              :height="350"
-            /> 
-          </div>
+          <bar-chart
+            css-classes="insular-chart__chart"
+            :chart-data="getCharts(state.renewables.attributes.content)"
+            :chart-options="state.chartOptions"
+            :height="isMobile ? 400 : 150"
+          />
         </data-card>
       </div>
     </div>
@@ -135,4 +121,7 @@ async function fetchBalanceData (timeTrunc) {
 </template>
 
 <style lang="scss">
+.market {
+  width: 100%;
+}
 </style>
