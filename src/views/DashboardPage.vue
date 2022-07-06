@@ -55,7 +55,7 @@ async function fetchBalanceData (timeTrunc) {
     }
     break;
     case 'month': {
-      date.start = dayjs().startOf('month').format('YYYY-MM-DDTHH:MM')
+      date.start = dayjs().subtract(29, 'day').format('YYYY-MM-DDTHH:MM')
       date.end =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
     }
     break;
@@ -82,17 +82,13 @@ async function fetchBalanceData (timeTrunc) {
 
 
   function getCharts (energyType) {
-    const datasets = energyType.map(e => ({
+    console.info(energyType)
+    const datasets = energyType.slice(0, -2).map(e => ({
       label: e.attributes.title,
       data: e.attributes.values.map(att => att.value),
       borderColor: e.attributes.color,
       backgroundColor: e.attributes.color,
     }))
-
-    console.info({
-           labels: energyType.map(e => e.attributes.values.map(att => dayjs(att.datetime).format('D MMM')))[0],
-      datasets,
-    })
 
     return {
       labels: energyType.map(e => e.attributes.values.map(att => dayjs(att.datetime).format('D MMM')))[0],
