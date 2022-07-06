@@ -66,7 +66,7 @@ async function fetchRealTimeElectricData (timeTrunc) {
     }
     break;
     case 'monthly': {
-      date.start = dayjs().startOf('month').format('YYYY-MM-DDTHH:MM')
+      date.start = dayjs().subtract(29, 'day').format('YYYY-MM-DDTHH:MM')
       date.end =  dayjs().hour(24).format('YYYY-MM-DDTHH:MM')
     }
     break;

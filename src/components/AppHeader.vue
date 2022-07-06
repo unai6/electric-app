@@ -118,7 +118,7 @@ const packageVersion = computed(() => import.meta.env.APP_VERSION || '0')
     width: 100%;
     justify-content: center;
     column-gap: $spacer*2;
-    font-size: 1.5rem;
+    font-size: ms(2);
 
     @include breakpoint (sm) {
       width: 50%;
