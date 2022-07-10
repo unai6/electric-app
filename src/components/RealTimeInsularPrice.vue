@@ -30,6 +30,19 @@ const state = reactive({
     pointBackgroundColor: 'transparent',
     responsive: true,
     borderWidth: 3,
+    plugins:  {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: 'white',
+          boxWidth: 10,
+          boxHeight: 2,
+          padding: 15,
+          align: 'start',
+          textAlign: 'left',
+        },
+      },
+    },
   },
   isChartVisible: false,
 })

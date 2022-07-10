@@ -30,8 +30,18 @@ const state = reactive({
     pointBackgroundColor: 'transparent',
     responsive: true,
     borderWidth: 3,
-    legend: {
-      position: 'bottom',
+    plugins:  {
+        legend: {
+          position: 'bottom',
+          labels: {
+          color: 'white',
+          boxWidth: 10,
+          boxHeight: 2,
+          padding: 15,
+          align: 'start',
+          textAlign: 'left',
+        },
+      },
     },
   },
   isLoading: true,
@@ -67,6 +77,7 @@ async function fetchBalanceData (timeTrunc) {
   try {
     const { data } = await axios.get(`https://apidatos.ree.es/es/datos/balance/balance-electrico?start_date=${date.start}&end_date=${date.end}&time_trunc=${timeTrunc}`)
     state.balanceData = data
+    console.info(data)
     const [renewables, notRenewables, demand] = state.balanceData.included
     state.renewables = renewables
     state.notRenewables = notRenewables
@@ -81,7 +92,7 @@ async function fetchBalanceData (timeTrunc) {
 
 
   function getCharts (energyType) {
-    const datasets = energyType.slice(0, -2).map(e => ({
+    const datasets = energyType.map(e => ({
       label: e.attributes.title,
       data: e.attributes.values.map(att => att.value),
       borderColor: e.attributes.color,
