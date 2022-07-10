@@ -30,6 +30,19 @@ const state = reactive({
     pointBackgroundColor: 'transparent',
     responsive: true,
     borderWidth: 3,
+    plugins:  {
+      legend: {
+        position: 'bottom',
+        labels: {
+          color: 'white',
+          boxWidth: 10,
+          boxHeight: 2,
+          padding: 15,
+          align: 'start',
+          textAlign: 'left',
+        },
+      },
+    },
   },
   isChartVisible: false,
 })
@@ -265,6 +278,10 @@ const computedChartDate = computed(() => date.start && date.end && date.timeTrun
 <style lang="scss">
 .insular {
   margin-bottom: $spacer*5;
+
+  @include breakpoint(md) {
+    margin-bottom: 0;
+  }
 
   &__stats {
     display: flex;

@@ -18,6 +18,8 @@ import Navbar from '@/components/Navbar.vue'
 .app {
   
   &__view {
+    background-color: shade($broken-white-color, darker-1);
+    min-height: calc(100vh - #{$bottom-menu-height});
 
     @include breakpoint(md) {
       display: grid;
@@ -30,7 +32,6 @@ import Navbar from '@/components/Navbar.vue'
     padding: $spacer;
     margin-left: auto;
     margin-top: 0;
-    min-height: calc(100vh - #{$bottom-menu-height});
     box-sizing: border-box;
     background: $transp-black-color;
     
