@@ -1,5 +1,7 @@
 <script setup>
-import { onMounted, reactive, computed } from 'vue'
+// Until the dashboard page is finally done Balance page will be shown here
+
+import { onMounted, reactive } from 'vue'
 
 import BaseLoader from '@/components/widgets/BaseLoader.vue'
 import DataCard from '@/components/widgets/DataCard.vue'
@@ -7,7 +9,7 @@ import DataCard from '@/components/widgets/DataCard.vue'
 // import i18n from '@/lang/i18n'
 import { useToast } from 'vue-toastification'
 
-import { Bar as BarChart } from 'vue-chartjs'
+import { Line as LineChart } from 'vue-chartjs'
 import { Chart, registerables } from 'chart.js'
 
 import axios from 'axios'
@@ -41,9 +43,6 @@ const date = reactive({
   end: '',
   timeTrunc: 'daily',
 })
-
-const xsBreakpoint = 649 // This var will be used only in this component for the moment. Move to a config file if necessary in the future.
-const isMobile = computed(() => window.innerWidth <= xsBreakpoint)
 
 onMounted(async () => await fetchBalanceData('day'))
 
@@ -82,7 +81,6 @@ async function fetchBalanceData (timeTrunc) {
 
 
   function getCharts (energyType) {
-    console.info(energyType)
     const datasets = energyType.slice(0, -2).map(e => ({
       label: e.attributes.title,
       data: e.attributes.values.map(att => att.value),
@@ -101,14 +99,33 @@ async function fetchBalanceData (timeTrunc) {
   <div class="market grid grid--12cols">
     <base-loader v-if="state.isLoading" />
     <div v-else class="grid-item grid-item--6col">
-      <h1>{{ state.balanceData.data.attributes.title }}</h1>
-      <div>
+      <h1>{{ state.balanceData.data.attributes.title }} diario</h1>
+      <div class="grid grid--2cols">
         <data-card :title="state.renewables.type">
-          <bar-chart
+          <line-chart
             css-classes="insular-chart__chart"
             :chart-data="getCharts(state.renewables.attributes.content)"
             :chart-options="state.chartOptions"
-            :height="isMobile ? 400 : 150"
+            :height="300"
+            :width="500"
+          />
+        </data-card>
+        <data-card class="top-spacer" :title="state.notRenewables.type">
+          <line-chart
+            css-classes="insular-chart__chart"
+            :chart-data="getCharts(state.notRenewables.attributes.content)"
+            :chart-options="state.chartOptions"
+            :height="300"
+            :width="500"
+          />
+        </data-card>
+        <data-card class="top-spacer" :title="state.demand.type">
+          <line-chart
+            css-classes="insular-chart__chart"
+            :chart-data="getCharts(state.demand.attributes.content)"
+            :chart-options="state.chartOptions"
+            :height="300"
+            :width="500"
           />
         </data-card>
       </div>
@@ -119,5 +136,10 @@ async function fetchBalanceData (timeTrunc) {
 <style lang="scss">
 .market {
   width: 100%;
+  margin-bottom: $spacer*5;
+
+  @include breakpoint(md) {
+    margin-bottom: 0;
+  }
 }
 </style>

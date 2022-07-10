@@ -266,6 +266,10 @@ const computedChartDate = computed(() => date.start && date.end && date.timeTrun
 .insular {
   margin-bottom: $spacer*5;
 
+  @include breakpoint(md) {
+    margin-bottom: 0;
+  }
+
   &__stats {
     display: flex;
     align-items: center;
