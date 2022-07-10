@@ -9,7 +9,7 @@ import DataCard from '@/components/widgets/DataCard.vue'
 // import i18n from '@/lang/i18n'
 import { useToast } from 'vue-toastification'
 
-import { Line as LineChart } from 'vue-chartjs'
+import { Bar as BarChart } from 'vue-chartjs'
 import { Chart, registerables } from 'chart.js'
 
 import axios from 'axios'
@@ -32,12 +32,10 @@ const state = reactive({
     borderWidth: 3,
     plugins:  {
         legend: {
-          position: 'bottom',
+          position: 'left',
           labels: {
+          padding: 10,
           color: 'white',
-          boxWidth: 10,
-          boxHeight: 2,
-          padding: 15,
           align: 'start',
           textAlign: 'left',
         },
@@ -113,7 +111,7 @@ async function fetchBalanceData (timeTrunc) {
       <h1>{{ state.balanceData.data.attributes.title }} diario</h1>
       <div class="grid grid--2cols">
         <data-card :title="state.renewables.type">
-          <line-chart
+          <bar-chart
             css-classes="insular-chart__chart"
             :chart-data="getCharts(state.renewables.attributes.content)"
             :chart-options="state.chartOptions"
@@ -122,7 +120,7 @@ async function fetchBalanceData (timeTrunc) {
           />
         </data-card>
         <data-card class="top-spacer" :title="state.notRenewables.type">
-          <line-chart
+          <bar-chart
             css-classes="insular-chart__chart"
             :chart-data="getCharts(state.notRenewables.attributes.content)"
             :chart-options="state.chartOptions"
@@ -131,7 +129,7 @@ async function fetchBalanceData (timeTrunc) {
           />
         </data-card>
         <data-card class="top-spacer" :title="state.demand.type">
-          <line-chart
+          <bar-chart
             css-classes="insular-chart__chart"
             :chart-data="getCharts(state.demand.attributes.content)"
             :chart-options="state.chartOptions"
