@@ -1,28 +1,38 @@
 <script setup>
 import { RouterView } from 'vue-router'
 import AppHeader from '@/components/AppHeader.vue'
+import Navbar from '@/components/Navbar.vue'
 </script>
 
 <template>
   <div id="app">
     <app-header />
-    <router-view class="app__content" />
+    <div class="app__view">
+      <navbar />
+      <router-view class="app__content" />
+    </div>
   </div>
 </template>
 
 <style lang="scss">
 .app {
+  
+  &__view {
+
+    @include breakpoint(md) {
+      display: grid;
+      grid-template-columns: 1fr 5fr;
+    }
+  }
+
   &__content {
     position: relative;
     padding: $spacer;
+    margin-left: auto;
     margin-top: 0;
     min-height: calc(100vh - #{$bottom-menu-height});
     box-sizing: border-box;
     background: $transp-black-color;
-
-    @include breakpoint(sm) {
-      margin-top: $header-height-top + $spacer;
-    }
     
     &--compact {
       margin-top: $header-height-compact !important;
@@ -33,12 +43,7 @@ import AppHeader from '@/components/AppHeader.vue'
     }
 
     @include breakpoint(sm) {
-      margin-top: $header-height;
-      min-height: calc(100vh - #{$header-height} - #{$spacer});
-    }
-
-    @include breakpoint(lg) {
-      margin-right: auto;
+      min-height: calc(100vh - #{$header-height});
     }
   }
 }

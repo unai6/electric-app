@@ -264,6 +264,7 @@ const computedChartDate = computed(() => date.start && date.end && date.timeTrun
 
 <style lang="scss">
 .insular {
+  margin-bottom: $spacer*5;
 
   &__stats {
     display: flex;
