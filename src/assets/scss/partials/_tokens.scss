@@ -68,15 +68,15 @@ $md-breakpoint: 850px;
 $lg-breakpoint: 1170px;
 $xl-breakpoint: 1200px;
 
-$max-content-width: 1200px;
+$max-content-width: 1000px;
 $max-central-width: 650px;
 $max-central-width-large: 800px;
 $central-content-margin: ($max-content-width - $max-central-width) * 0.5;
 
 // Header
 // --------------------
-$header-height-top: 1.5rem;
-$header-height-bottom: 1.5rem;
+$header-height-top: 2rem;
+$header-height-bottom: 2rem;
 $header-height: $header-height-top + $header-height-bottom;
 $header-height-compact: 5rem;
 $bottom-menu-height: 4rem;
